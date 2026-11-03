@@ -10,13 +10,15 @@ cd "$(dirname "$0")/.."
 P=$PWD
 
 if ! command -v ffmpeg >/dev/null; then
-  echo "== FFmpeg (apt)"; (sudo -n true 2>/dev/null && SUDO=sudo || SUDO=); $SUDO apt-get update -qq && $SUDO apt-get install -y -qq ffmpeg
+  echo "== FFmpeg (apt)"; SUDO=; [ "$(id -u)" = 0 ] || SUDO=sudo
+  $SUDO apt-get update -qq && $SUDO apt-get install -y -qq ffmpeg
 fi
 
 echo "== Python (.venv)"
 [ -x .venv/bin/python ] || python3 -m venv .venv
 .venv/bin/pip install -q --upgrade pip
-.venv/bin/pip install -q "faster-whisper==1.2.1" numpy soundfile
+# PyAV 19 ha tolto un argomento che faster-whisper 1.2.1 usa ancora: si resta su av 18
+.venv/bin/pip install -q "faster-whisper==1.2.1" "av<19" numpy soundfile
 
 echo "== Node (.tools)"
 mkdir -p .tools
