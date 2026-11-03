@@ -5,7 +5,7 @@ Quando cambia la voce (ElevenLabs): rifare timeline.json, poi `python3 cartoon/b
 """
 import json, os, re, shutil, html
 
-ROOT = "/home/user/APEX-AI-Terminal/video-shadow-ai"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 C = f"{ROOT}/cartoon"; HF = f"{C}/hf"
 os.makedirs(f"{HF}/compositions", exist_ok=True); os.makedirs(f"{HF}/assets/audio", exist_ok=True)
 tl = json.load(open(f"{ROOT}/timeline.json")); D = tl["duration"]
@@ -13,8 +13,9 @@ S = {s["id"]: s for s in tl["scenes"]}
 LINES = [{k: l[k] for k in ("scene", "start", "end", "caption", "pauses", "speech") if k in l} | ({"words": l["words"]} if l.get("words") else {}) for l in tl["lines"]]
 
 for f in ("characters.js", "chatbots.js", "props.js", "scenes.js", "anim.js"): shutil.copy(f"{C}/{f}", f"{HF}/assets/{f}")
-shutil.copy(f"{ROOT}/remotion/node_modules/gsap/dist/gsap.min.js", f"{HF}/assets/gsap.min.js")
-shutil.copy(f"{ROOT}/hyperframes/assets/paper.png", f"{HF}/assets/paper.png")
+# gsap e la carta sono gia' nel repo (cartoon/hf/assets): si ricopiano solo se le sorgenti ci sono
+for src, dst in ((f"{ROOT}/remotion/node_modules/gsap/dist/gsap.min.js", "gsap.min.js"), (f"{ROOT}/hyperframes/assets/paper.png", "paper.png")):
+    if os.path.exists(src): shutil.copy(src, f"{HF}/assets/{dst}")
 
 PAPER_CSS = """
   .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;

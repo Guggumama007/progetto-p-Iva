@@ -1,18 +1,19 @@
 """faster-whisper: tempi parola per parola della voce definitiva, per sottotitoli e timbri al frame giusto.
-- trascrive audio/voice_chatterbox.wav (modello small, italiano, CPU int8, VAD Silero incluso)
+- trascrive la traccia voce montata (audio/voice_eleven.wav se c'e', altrimenti la voce guida) (modello small, italiano, CPU int8, VAD Silero incluso)
 - abbina le parole alle battute per POSIZIONE (non per testo: le ripetizioni non si confondono)
 - scrive line["words"] in timeline.json senza toccare inizi/fine delle battute (le scene restano valide)
 - stampa quanto la trascrizione si discosta dal copione (controllo di pronuncia della voce)
 Richiede huggingface.co abilitato (Systran/faster-whisper-small).
-Uso: /opt/venv/tools/bin/python tools/fw_words.py
+Uso: .venv/bin/python tools/fw_words.py
 """
-import json, re, difflib
+import json, re, difflib, os
 from faster_whisper import WhisperModel
 
-ROOT = "/home/user/APEX-AI-Terminal/video-shadow-ai"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VOICE = next(f"{ROOT}/audio/{f}" for f in ("voice_eleven.wav", "voice_guide.wav") if os.path.exists(f"{ROOT}/audio/{f}"))
 tl = json.load(open(f"{ROOT}/timeline.json"))
 model = WhisperModel("small", device="cpu", compute_type="int8")
-segs, info = model.transcribe(f"{ROOT}/audio/voice_chatterbox.wav", language="it", word_timestamps=True,
+segs, info = model.transcribe(VOICE, language="it", word_timestamps=True,
                               vad_filter=True, vad_parameters=dict(min_silence_duration_ms=200), beam_size=5)
 words = [w for s in segs for w in s.words]
 norm = lambda t: re.sub(r"[^\wàèéìòù]", "", t.lower())

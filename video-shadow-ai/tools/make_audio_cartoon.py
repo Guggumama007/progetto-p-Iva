@@ -4,7 +4,8 @@ arpeggio veloce nel viaggio; riavvolgimento = "tape stop"; finale = maggiore piu
 Effetti: ~40 suoni sulle azioni (corsa, pop, risucchio, colpi, strappi, timbri, errori, sparkle...).
 Uscite: audio/cartoon_music.wav, audio/cartoon_sfx.wav, audio/cartoon_voice.wav (= voce guida provvisoria).
 La versione definitiva (ElevenLabs: voce, ed eventualmente musica ed effetti) si monta nella prossima sessione."""
-import json, shutil
+import json, shutil, os
+os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # percorsi relativi alla cartella del progetto
 import numpy as np, soundfile as sf
 
 SR = 48000

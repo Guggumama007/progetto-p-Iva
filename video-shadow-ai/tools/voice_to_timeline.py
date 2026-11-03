@@ -2,17 +2,18 @@
 1) taglio della ripresa: segmenti di voce (Silero VAD di faster-whisper) raggruppati in 13 battute con una
    programmazione dinamica che rispetta la lunghezza attesa di ogni battuta (testo) e preferisce i tagli sulle pause lunghe
 2) salva audio/eleven/00.wav ... 12.wav  -> poi:
-   /opt/venv/tools/bin/python tools/timeline.py audio/script_cartoon.json audio/eleven audio/pads_cartoon.json audio/voice_eleven.wav
-   /opt/venv/tools/bin/python tools/fw_words.py          (facoltativo, se huggingface.co e' abilitato: tempi parola per parola)
+   .venv/bin/python tools/timeline.py audio/script_cartoon.json audio/eleven audio/pads_cartoon.json audio/voice_eleven.wav
+   .venv/bin/python tools/fw_words.py          (facoltativo, se huggingface.co e' abilitato: tempi parola per parola)
    python3 tools/make_audio_cartoon.py && python3 cartoon/build.py && (cd cartoon/hf && npx hyperframes render ...)
-Uso: /opt/venv/tools/bin/python tools/voice_to_timeline.py <file ElevenLabs .mp3/.wav>
+Uso: .venv/bin/python tools/voice_to_timeline.py <file ElevenLabs .mp3/.wav>
 """
-import json, subprocess, sys, os, re
+import json, subprocess, sys, os, re, shutil
 import numpy as np
 from faster_whisper.audio import decode_audio
 from faster_whisper.vad import get_speech_timestamps, VadOptions
 
-ROOT = "/home/user/APEX-AI-Terminal/video-shadow-ai"; FF = "/opt/ffmpeg-src/bin/ffmpeg"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FFMPEG = os.environ.get("FFMPEG") or next((p for p in ("/opt/ffmpeg-src/bin/ffmpeg", shutil.which("ffmpeg")) if p and os.path.exists(p)), "ffmpeg"); FF = FFMPEG
 src = sys.argv[1]; script = json.load(open(f"{ROOT}/audio/script_cartoon.json")); n = len(script)
 a = decode_audio(src, sampling_rate=16000)
 seg = [(t["start"] / 16000, t["end"] / 16000) for t in get_speech_timestamps(a, VadOptions(min_silence_duration_ms=220, speech_pad_ms=60))]

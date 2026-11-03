@@ -9,3 +9,8 @@ cartoon/hf/assets/audio/
 audio/cartoon_music.wav
 audio/cartoon_sfx.wav
 audio/cartoon_voice.wav
+# ambiente della sessione (tools/setup_sessione.sh)
+.venv/
+.tools/
+audio/eleven/
+design/*-master.mp4
