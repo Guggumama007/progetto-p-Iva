@@ -1,0 +1,6 @@
+# dipendenze e cache (rigenerabili)
+remotion/node_modules/
+hyperframes/.hyperframes/
+hyperframes/assets/audio/
+*.blend1
+__pycache__/

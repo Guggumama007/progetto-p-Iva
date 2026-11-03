@@ -1,0 +1,17 @@
+{
+  "name": "shadow-ai-remotion",
+  "private": true,
+  "type": "module",
+  "scripts": {"studio": "remotion studio", "render": "remotion render"},
+  "dependencies": {
+    "remotion": "4.0.540",
+    "@remotion/cli": "4.0.540",
+    "@remotion/three": "4.0.540",
+    "@react-three/fiber": "^9.1.0",
+    "three": "0.187.0",
+    "gsap": "3.15.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {"typescript": "^5.6.0", "@types/react": "^19.0.0", "@types/three": "^0.180.0"}
+}

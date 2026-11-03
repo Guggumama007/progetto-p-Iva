@@ -1,0 +1,32 @@
+<template>
+<style>
+  #shadow { position:absolute; inset:0; overflow:visible; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:3px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; }
+  .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; letter-spacing:-.01em; }
+
+  #sh-row .tag { position: relative; }
+</style>
+<div id="shadow" data-composition-id="shadow" data-width="1920" data-height="1080">
+  <div id="sh-row" style="position:absolute; left:0; right:0; top:330px; text-align:center; white-space:nowrap"><span id="sh-0" class="tag ttl " style="position:relative; display:inline-block; margin:0 6px; padding:6px 22px 0; font-size:190px; line-height:1.05; transform:rotate(-6deg)">S</span><span id="sh-1" class="tag ttl " style="position:relative; display:inline-block; margin:0 6px; padding:6px 22px 0; font-size:190px; line-height:1.05; transform:rotate(4deg)">H</span><span id="sh-2" class="tag ttl " style="position:relative; display:inline-block; margin:0 6px; padding:6px 22px 0; font-size:190px; line-height:1.05; transform:rotate(-3deg)">A</span><span id="sh-3" class="tag ttl " style="position:relative; display:inline-block; margin:0 6px; padding:6px 22px 0; font-size:190px; line-height:1.05; transform:rotate(7deg)">D</span><span id="sh-4" class="tag ttl " style="position:relative; display:inline-block; margin:0 6px; padding:6px 22px 0; font-size:190px; line-height:1.05; transform:rotate(-5deg)">O</span><span id="sh-5" class="tag ttl " style="position:relative; display:inline-block; margin:0 6px; padding:6px 22px 0; font-size:190px; line-height:1.05; transform:rotate(3deg)">W</span><span style="display:inline-block; width:46px"></span><span id="sh-7" class="tag ttl cu" style="position:relative; display:inline-block; margin:0 6px; padding:6px 22px 0; font-size:190px; line-height:1.05; transform:rotate(-4deg)">A</span><span id="sh-8" class="tag ttl cu" style="position:relative; display:inline-block; margin:0 6px; padding:6px 22px 0; font-size:190px; line-height:1.05; transform:rotate(6deg)">I</span></div>
+  <div id="sh-sub" class="tag lbl" style="left:0; right:0; margin:auto; width:620px; top:640px; padding:14px 0; text-align:center; font-size:34px">IA usata senza permesso</div>
+</div>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#sh-0", {opacity:0, y:-120, scale:1.25}, {opacity:1, y:0, scale:1, duration:0.32, ease:"back.out(2)"}, 1.401);
+  tl.fromTo("#sh-1", {opacity:0, y:-120, scale:1.25}, {opacity:1, y:0, scale:1, duration:0.32, ease:"back.out(2)"}, 1.456);
+  tl.fromTo("#sh-2", {opacity:0, y:-120, scale:1.25}, {opacity:1, y:0, scale:1, duration:0.32, ease:"back.out(2)"}, 1.511);
+  tl.fromTo("#sh-3", {opacity:0, y:-120, scale:1.25}, {opacity:1, y:0, scale:1, duration:0.32, ease:"back.out(2)"}, 1.566);
+  tl.fromTo("#sh-4", {opacity:0, y:-120, scale:1.25}, {opacity:1, y:0, scale:1, duration:0.32, ease:"back.out(2)"}, 1.621);
+  tl.fromTo("#sh-5", {opacity:0, y:-120, scale:1.25}, {opacity:1, y:0, scale:1, duration:0.32, ease:"back.out(2)"}, 1.676);
+  tl.fromTo("#sh-7", {opacity:0, y:-120, scale:1.25}, {opacity:1, y:0, scale:1, duration:0.32, ease:"back.out(2)"}, 1.786);
+  tl.fromTo("#sh-8", {opacity:0, y:-120, scale:1.25}, {opacity:1, y:0, scale:1, duration:0.32, ease:"back.out(2)"}, 1.841);
+  tl.fromTo("#sh-sub", {opacity:0, filter:"blur(6px)"}, {opacity:1, filter:"blur(0px)", duration:0.2}, 1.701);
+  tl.to(["#sh-row","#sh-sub"], {opacity:0, filter:"blur(8px)", duration:0.2, ease:"power2.in"}, 2.999);
+  window.__timelines["shadow"] = tl;
+</script>
+</template>

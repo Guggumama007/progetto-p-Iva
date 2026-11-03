@@ -1,0 +1,21 @@
+[
+ {"scene":"buongiorno","text":"Buongiorno. Sono un contratto.","caption":"Buongiorno. Sono un contratto."},
+ {"scene":"buongiorno","text":"Tre pagine, due firme, e parecchi dati riservati.","caption":"Tre pagine, due firme e parecchi dati riservati."},
+ {"scene":"fretta","text":"Alle nove e quindici, qualcuno ha fretta.","caption":"Alle 9:15 qualcuno ha fretta."},
+ {"scene":"fretta","text":"Mi copia... e mi incolla in un ciàtbot trovato online.","caption":"Mi copia… e mi incolla in un chatbot trovato online."},
+ {"scene":"fretta","text":"Gratis. Che fortuna.","caption":"Gratis. Che fortuna."},
+ {"scene":"nessuno","text":"Nessuno l'ha vietato. Nessuno l'ha autorizzato.","caption":"Nessuno l'ha vietato. Nessuno l'ha autorizzato."},
+ {"scene":"nessuno","text":"Diciamo che... nessuno ha chiesto.","caption":"Diciamo che… nessuno ha chiesto."},
+ {"scene":"viaggio","text":"Trenta secondi, ed è fatto.","caption":"Trenta secondi ed è fatto."},
+ {"scene":"viaggio","text":"Peccato che adesso io sia qui. Non so nemmeno in che paese.","caption":"Peccato che adesso io sia qui. Non so nemmeno in che paese."},
+ {"scene":"nome","text":"Questa si chiama sciàdou èi ài.","caption":"Questa si chiama Shadow AI."},
+ {"scene":"rischio","text":"E il rischio è doppio.","caption":"E il rischio è doppio."},
+ {"scene":"rischio","text":"Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo.","caption":"Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo."},
+ {"scene":"rischio","text":"Per te: errori che firmi tu, e regole aziendali violate.","caption":"Per te: errori che firmi tu e regole aziendali violate."},
+ {"scene":"rischio","text":"Firmate da te, eh.","caption":"Firmate da te, eh."},
+ {"scene":"riavvolgi","text":"Riavvolgiamo.","caption":"Riavvolgiamo."},
+ {"scene":"giusta","text":"Stessa azienda, tre cose in più.","caption":"Stessa azienda, tre cose in più."},
+ {"scene":"giusta","text":"Uno strumento approvato. Regole chiare. Persone formate.","caption":"Uno strumento approvato. Regole chiare. Persone formate."},
+ {"scene":"finale","text":"Il lavoro si fa lo stesso, in trenta secondi.","caption":"Il lavoro si fa lo stesso, in trenta secondi."},
+ {"scene":"finale","text":"E io resto a casa.","caption":"E io resto a casa."}
+]

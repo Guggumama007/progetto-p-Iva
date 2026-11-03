@@ -1,0 +1,29 @@
+<template>
+<style>
+  #rewind { position:absolute; inset:0; overflow:visible; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:3px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; }
+  .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; letter-spacing:-.01em; }
+
+</style>
+<div id="rewind" data-composition-id="rewind" data-width="1920" data-height="1080">
+
+  <div id="rw-veil" style="position:absolute; inset:0; background:repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 2px, transparent 2px 6px)"></div>
+  <div id="rw-tag" class="tag ttl" style="left:0; right:0; margin:auto; width:760px; top:380px; padding:18px 0 10px; text-align:center; font-size:110px"><span style="color:#9a3f17">◀◀</span> Riavvolgiamo</div>
+  <div id="rw-clk" class="tag" style="right:110px; top:90px; padding:14px 30px 10px; font-family:'IBM Plex Mono'; font-weight:700; font-size:96px; transform:rotate(2deg)"><span id="rw-t">09:47</span></div>
+</div>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#rw-veil", {opacity:0}, {opacity:1, duration:0.1}, 0);
+  tl.fromTo("#rw-tag", {opacity:0, x:120, filter:"blur(14px)"}, {opacity:1, x:0, filter:"blur(0px)", duration:0.3, ease:"expo.out"}, 0.25);
+  tl.fromTo("#rw-clk", {opacity:0}, {opacity:1, duration:0.15}, 0.1);
+  const clock = {m: 47};
+  tl.fromTo(clock, {m: 47}, {m: 15, duration: 1.837, ease:"power2.out", onUpdate: () => { document.getElementById("rw-t").textContent = "09:" + String(Math.round(clock.m)).padStart(2, "0"); } }, 0.1);
+  tl.to(["#rw-tag","#rw-veil","#rw-clk"], {opacity:0, filter:"blur(8px)", duration:0.18, ease:"power2.in"}, 2.187);
+  window.__timelines["rewind"] = tl;
+</script>
+</template>

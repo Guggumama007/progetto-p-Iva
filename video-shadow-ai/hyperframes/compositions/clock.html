@@ -1,0 +1,24 @@
+<template>
+<style>
+  #clock { position:absolute; inset:0; overflow:visible; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:3px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; }
+  .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; letter-spacing:-.01em; }
+
+</style>
+<div id="clock" data-composition-id="clock" data-width="1920" data-height="1080">
+  <div id="clk" class="tag" style="right:110px; top:90px; padding:18px 34px 14px; transform:rotate(2deg); font-family:'IBM Plex Mono'; font-weight:700; font-size:118px; line-height:1"><span class="dg" id="clk-d0" style="display:inline-block">0</span><span class="dg" id="clk-d1" style="display:inline-block">9</span><span class="dg" id="clk-d2" style="display:inline-block">:</span><span class="dg" id="clk-d3" style="display:inline-block">1</span><span class="dg" id="clk-d4" style="display:inline-block">5</span></div>
+</div>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#clk", {opacity:0, y:-40, rotation:8}, {opacity:1, y:0, rotation:2, duration:0.55, ease:"back.out(1.5)"}, 0.15);
+  ["#clk-d0","#clk-d1","#clk-d2","#clk-d3","#clk-d4"].forEach((s,i)=> tl.fromTo(s, {opacity:0, y:22}, {opacity:1, y:0, duration:0.14, ease:"power3.out"}, 0.35 + i*0.06));
+  tl.to("#clk-d2", {opacity:0.25, duration:0.01, yoyo:true, repeat:5, repeatDelay:0.49}, 1.0);
+  tl.to("#clk", {opacity:0, y:-24, filter:"blur(6px)", duration:0.2, ease:"power2.in"}, 4.6);
+  window.__timelines["clock"] = tl;
+</script>
+</template>

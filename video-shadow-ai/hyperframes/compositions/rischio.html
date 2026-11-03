@@ -1,0 +1,38 @@
+<template>
+<style>
+  #rischio { position:absolute; inset:0; overflow:visible; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:3px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; }
+  .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; letter-spacing:-.01em; }
+
+</style>
+<div id="rischio" data-composition-id="rischio" data-width="1920" data-height="1080">
+  <div id="rk-h" class="tag ttl" style="left:0; right:0; margin:auto; width:820px; text-align:center; top:120px; font-size:76px; padding:10px 34px 6px; transform:rotate(-1deg)">Il rischio è doppio</div>
+  <div id="rk-a" class="tag cu lbl" style="left:150px; top:300px; font-size:30px; padding:12px 22px; transform:rotate(-2deg)">Per l&#x27;azienda</div>
+  <div id="rk-a1" class="tag ttl" style="left:150px; top:400px; font-size:44px; padding:12px 26px 8px; max-width:600px; transform:rotate(1.5deg)">Dati dei clienti esposti</div>
+  <div id="rk-a2" class="tag ttl" style="left:150px; top:500px; font-size:44px; padding:12px 26px 8px; max-width:600px; transform:rotate(-1deg)">Informazioni riservate fuori controllo</div>
+  <div id="rk-b" class="tag cu lbl" style="left:1180px; top:300px; font-size:30px; padding:12px 22px; transform:rotate(2deg)">Per te</div>
+  <div id="rk-b1" class="tag ttl" style="left:1180px; top:400px; font-size:44px; padding:12px 26px 8px; max-width:600px; transform:rotate(-1.5deg)">Errori che firmi tu</div>
+  <div id="rk-b2" class="tag ttl" style="left:1180px; top:500px; font-size:44px; padding:12px 26px 8px; max-width:600px; transform:rotate(1deg)">Regole aziendali violate</div>
+  <div id="rk-st" class="lbl" style="position:absolute; left:1240px; top:640px; padding:14px 26px; font-size:34px; color:#b5562a; border:7px solid #b5562a; border-radius:10px; transform:rotate(-9deg); opacity:0; background:rgba(241,235,222,.85)">Firmato: tu</div>
+
+</div>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#rk-h", {opacity:0, x:-40, filter:"blur(8px)"}, {opacity:1, x:0, filter:"blur(0px)", duration:0.35, ease:"expo.out"}, 0.700);
+  tl.fromTo("#rk-a", {opacity:0, x:-40, filter:"blur(8px)"}, {opacity:1, x:0, filter:"blur(0px)", duration:0.35, ease:"expo.out"}, 2.762);
+  tl.fromTo("#rk-a1", {opacity:0, x:-40, filter:"blur(8px)"}, {opacity:1, x:0, filter:"blur(0px)", duration:0.35, ease:"expo.out"}, 3.431);
+  tl.fromTo("#rk-a2", {opacity:0, x:-40, filter:"blur(8px)"}, {opacity:1, x:0, filter:"blur(0px)", duration:0.35, ease:"expo.out"}, 4.929);
+  tl.fromTo("#rk-b", {opacity:0, x:40, filter:"blur(8px)"}, {opacity:1, x:0, filter:"blur(0px)", duration:0.35, ease:"expo.out"}, 7.427);
+  tl.fromTo("#rk-b1", {opacity:0, x:40, filter:"blur(8px)"}, {opacity:1, x:0, filter:"blur(0px)", duration:0.35, ease:"expo.out"}, 8.023);
+  tl.fromTo("#rk-b2", {opacity:0, x:40, filter:"blur(8px)"}, {opacity:1, x:0, filter:"blur(0px)", duration:0.35, ease:"expo.out"}, 9.389);
+  tl.to("#rk-h", {opacity:0, y:-20, filter:"blur(6px)", duration:0.2}, 2.462);
+  tl.fromTo("#rk-st", {opacity:0, scale:2.2, rotation:-20}, {opacity:1, scale:1, rotation:-9, duration:0.16, ease:"power4.in"}, 11.590);
+  tl.to(["#rk-a","#rk-a1","#rk-a2","#rk-b","#rk-b1","#rk-b2","#rk-st"], {opacity:0, filter:"blur(8px)", duration:0.22, ease:"power2.in", stagger:0.03}, 12.752);
+  window.__timelines["rischio"] = tl;
+</script>
+</template>

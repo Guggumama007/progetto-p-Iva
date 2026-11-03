@@ -1,0 +1,22 @@
+<template>
+<style>
+  #flash { position:absolute; inset:0; overflow:visible; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:3px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; }
+  .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; letter-spacing:-.01em; }
+
+</style>
+<div id="flash" data-composition-id="flash" data-width="1920" data-height="1080">
+  <div id="fl" style="position:absolute; inset:0; background:#f6efe2"></div>
+</div>
+<script>
+  const tl = gsap.timeline({ paused: true });
+  tl.fromTo("#fl", {opacity:0}, {opacity:1, duration:0.18, ease:"power3.in"}, 0.0);
+  tl.to("#fl", {opacity:0, duration:0.45, ease:"power2.out"}, 0.3);
+  window.__timelines["flash"] = tl;
+</script>
+</template>
