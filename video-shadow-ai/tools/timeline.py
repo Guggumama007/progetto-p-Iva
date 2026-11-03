@@ -10,6 +10,8 @@ from faster_whisper.vad import get_speech_timestamps, VadOptions
 
 FFMPEG = "/opt/ffmpeg-src/bin/ffmpeg"
 script = json.load(open(sys.argv[1])); d = sys.argv[2]
+PADS = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else None      # pause per scena (opzionale)
+VOICE_OUT = sys.argv[4] if len(sys.argv) > 4 else "audio/voice_v2.wav"
 
 # respiro (s) prima della prima battuta e dopo l'ultima, per scena: lascia spazio alle azioni visive
 PAD = {  # scena: (prima, dopo)
@@ -18,6 +20,7 @@ PAD = {  # scena: (prima, dopo)
     "finale": (0.5, 0.9), "cartello": (0.0, 3.2),
 }
 GAP = 0.35  # pausa tra battute nella stessa scena
+if PADS: PAD = {k: tuple(v) for k, v in PADS.items()}
 
 lines = []
 for i, l in enumerate(script):
@@ -37,6 +40,7 @@ order.append("cartello")
 for sc in order:
     pre, post = PAD[sc]; start = t; t += pre
     for l in [x for x in lines if x["scene"] == sc]:
+        t += l.get("pre", 0.0)                 # pausa extra prima della battuta (gag visiva)
         l["start"] = round(t, 3); l["end"] = round(t + l["speech"], 3); t = l["end"] + GAP
     if any(x["scene"] == sc for x in lines): t -= GAP
     t += post
@@ -51,6 +55,6 @@ for k, l in enumerate(lines):
     inputs += ["-i", l["wav"]]
     filt.append(f"[{k}]atrim=start={l['trim_start']},asetpts=PTS-STARTPTS,aresample=48000,adelay={int(l['start']*1000)}:all=1[v{k}]")
 filt.append("".join(f"[v{k}]" for k in range(len(lines))) + f"amix=inputs={len(lines)}:normalize=0,apad=whole_dur={total}[out]")
-subprocess.run([FFMPEG, "-v", "error", "-y", *inputs, "-filter_complex", ";".join(filt), "-map", "[out]", "-ac", "1", "audio/voice_v2.wav"], check=True)
+subprocess.run([FFMPEG, "-v", "error", "-y", *inputs, "-filter_complex", ";".join(filt), "-map", "[out]", "-ac", "1", VOICE_OUT], check=True)
 for s in scenes: print(f"{s['id']:<11} {s['start']:6.2f} → {s['end']:6.2f}")
 print("durata totale:", total, "s")

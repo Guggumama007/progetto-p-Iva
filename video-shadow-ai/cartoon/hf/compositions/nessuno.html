@@ -1,0 +1,63 @@
+<template>
+<style>
+  #nessuno { position:absolute; inset:0; overflow:hidden; }
+  #nessuno svg.stage { position:absolute; left:0; top:0; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:4px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; } .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; }
+  .mono { font-family:'IBM Plex Mono'; font-weight:700; }
+
+</style>
+<div id="nessuno" data-composition-id="nessuno" data-width="1920" data-height="1080">
+  <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-ignore></svg>
+<div id="ns-a" class="tag lbl" style="left:170px; top:250px; padding:22px 30px; font-size:56px; transform-origin:50% -80px">Vietato<span id="ns-qa" style="display:inline-block; color:#9a3f17">?</span></div>
+  <div id="ns-b" class="tag lbl" style="right:150px; top:300px; padding:22px 30px; font-size:56px; transform-origin:50% -80px">Autorizzato<span id="ns-qb" style="display:inline-block; color:#9a3f17">?</span></div>
+</div>
+<script>
+(function () {
+  const SID = "nessuno", DUR = 5.654, S0 = 17.138;
+  const LINES = [{"scene": "buongiorno", "start": 2.0, "end": 6.704, "caption": "Buongiorno! Sono un contratto. Tre pagine, due firme… e parecchi dati riservati.", "pauses": [[0.0, 4.704]], "speech": 4.704}, {"scene": "fretta", "start": 7.804, "end": 10.131, "caption": "Ore nove e quindici. Qualcuno ha fretta.", "pauses": [[0.0, 2.327]], "speech": 2.327}, {"scene": "fretta", "start": 11.181, "end": 13.583, "caption": "Mi copia… e mi incolla in un chatbot trovato online.", "pauses": [[0.0, 2.402]], "speech": 2.402}, {"scene": "fretta", "start": 14.933, "end": 16.438, "caption": "Gratis. Che fortuna.", "pauses": [[0.0, 1.505]], "speech": 1.505}, {"scene": "nessuno", "start": 17.638, "end": 22.092, "caption": "Nessuno l'ha vietato. Nessuno l'ha autorizzato. Diciamo che… nessuno ha chiesto.", "pauses": [[0.0, 1.232], [1.344, 4.454]], "speech": 4.454}, {"scene": "viaggio", "start": 23.792, "end": 25.382, "caption": "Trenta secondi, ed è fatto.", "pauses": [[0.0, 1.59]], "speech": 1.59}, {"scene": "viaggio", "start": 27.232, "end": 30.354, "caption": "Peccato che adesso io sia qui. Non so nemmeno in che paese.", "pauses": [[0.0, 3.122]], "speech": 3.122}, {"scene": "nome", "start": 31.154, "end": 32.938, "caption": "Questa si chiama Shadow AI.", "pauses": [[0.0, 1.784]], "speech": 1.784}, {"scene": "rischio", "start": 35.038, "end": 44.723, "caption": "E il rischio è doppio. Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo. Per te: errori che firmi tu, e regole aziendali violate.", "pauses": [[0.0, 1.552], [1.696, 9.685]], "speech": 9.685}, {"scene": "rischio", "start": 45.673, "end": 46.926, "caption": "Firmate da te, eh.", "pauses": [[0.0, 1.253]], "speech": 1.253}, {"scene": "riavvolgi", "start": 48.626, "end": 49.516, "caption": "Riavvolgiamo.", "pauses": [[0.0, 0.89]], "speech": 0.89}, {"scene": "giusta", "start": 51.816, "end": 57.176, "caption": "Stessa azienda, tre cose in più. Uno strumento approvato. Regole chiare. Persone formate.", "pauses": [[0.0, 1.584], [1.696, 4.048], [4.192, 5.36]], "speech": 5.36}, {"scene": "finale", "start": 58.376, "end": 62.273, "caption": "Il lavoro si fa lo stesso, in trenta secondi. E io… resto a casa.", "pauses": [[0.0, 3.897]], "speech": 3.897}];
+  const L = LINES.filter((l) => l.scene === SID).map((l) => ({ ...l, a: l.start - S0, b: l.end - S0 }));
+  const W = (i, word, edge = "start") => Anim.wordTime(L[i], word, edge) - S0;      // istante locale di una parola
+  const MOUTH = (t, idle = "rest") => Anim.mouthAt(LINES, S0 + t, idle);           // lip-sync del Contratto
+  const $ = (s) => document.querySelector("#nessuno " + s);
+  const tl = gsap.timeline({ paused: true });
+
+// Scena 3 - Nessuno. Primo piano (sfondo sfocato). "vietato" -> guarda a sinistra, "autorizzato" -> a destra,
+  // spallucce: i punti interrogativi cadono; "Diciamo che..." occhiata pensosa; "nessuno ha chiesto." impassibile.
+  const tV = W(0, "vietato"), tA = W(0, "autorizzato"), tD = W(0, "Diciamo"), tC = W(0, "chiesto"), tShrug = tD - 0.42;
+  const KC = [
+    [0, { x: 1000, y: 864, s: 1.22, lid: 0.5, bt: -2, bc: 2, by: -292, px: 0, py: 0, lx: -140, ly: -100, rx: 140, ry: -100, turn: 0, idleMouth: "flat", sq: 1 }],
+    [0.35, { lid: 0.1, bc: 8, by: -300 }, "power2.out"],
+    [tV - 0.1, { px: -1, py: -0.1, turn: -0.25, bt: -6, lid: 0 }, "power3.out"],                          // "vietato" -> sinistra
+    [tA - 0.1, { px: 1, py: -0.1, turn: 0.25, bt: 6 }, "power3.out"],                                      // "autorizzato" -> destra
+    [tShrug - 0.12, { sq: 0.94, y: 864, lx: -130, ly: -90, rx: 130, ry: -90, px: 0, turn: 0, bt: 0 }, "power2.in"],   // anticipazione
+    [tShrug + 0.12, { sq: 1.07, y: 836, lx: -178, ly: -252, rx: 178, ry: -252, by: -314, bc: 16 }, "back.out(2)"],     // spallucce
+    [tShrug + 0.42, { sq: 1.0, y: 864, lx: -150, ly: -120, rx: 150, ry: -120, by: -302, bc: 8 }, "power2.inOut"],
+    [tD + 0.1, { px: -0.9, py: -0.4, lid: 0.32, bt: 9, rf: true, rx: 44, ry: -176, rb: -0.7 }, "power2.out"],         // "Diciamo che..." pensoso
+    [tC - 0.15, { rf: false, px: 0, py: 0, lid: 0.52, bt: -2, bc: 2, by: -292, rx: 140, ry: -100, rb: -0.3 }, "power3.out"],   // impassibile
+    [L[0].b + 0.05, { idleMouth: "flat" }],
+  ];
+  const CAM = [[0, { x: 1000, y: 600, z: 1.48 }], [DUR, { x: 1006, y: 606, z: 1.54 }, "power1.inOut"]];
+  const blinks = [tA + 0.55, L[0].b + 0.3];
+  // fondo sfocato con ChatGratis e il Mouse ancora al loro posto (continuita' con la scena precedente)
+  const bgCast = Anim.place(Anim.chatgratis({ rx: 220, ry: -250, rh: "thumb", px: 1 }, 0), { x: 465, y: 666, s: 0.86 }) +
+    Anim.shadow({ x: 1440, y: 868, s: 0.95, ground: 868 }, 110) + Anim.place(Anim.mouse({ mouth: "smile", px: -0.6, lx: -140, ly: -150 }, 0), { x: 1440, y: 868, s: 0.95 });
+  const update = Anim.stage($("svg.stage"), `<g filter="url(#fxBlur)">${Scenes.office({ fx: false })}${bgCast}</g>`, Scenes.fx("warm"), (t) => {
+    const c = Anim.at(KC, t); c.blink = Anim.blinkAt(blinks, t); c.mouth = MOUTH(t, c.idleMouth);
+    return { cam: Anim.at(CAM, t), actors: Anim.shadow({ ...c, ground: 864 }, 135) + Anim.place(Anim.contratto(c, t), c) };
+  });
+  Anim.drive(tl, DUR, update);
+  tl.fromTo("#ns-a", { opacity: 0, y: -300, rotation: -16 }, { opacity: 1, y: 0, rotation: -4, duration: 0.6, ease: "back.out(1.7)" }, tV - 0.2);
+  tl.fromTo("#ns-b", { opacity: 0, y: -300, rotation: 16 }, { opacity: 1, y: 0, rotation: 3, duration: 0.6, ease: "back.out(1.7)" }, tA - 0.2);
+  tl.fromTo("#ns-qa", { y: 0, rotation: 0 }, { y: 640, rotation: -170, duration: 0.75, ease: "power2.in" }, tShrug + 0.05);
+  tl.fromTo("#ns-qb", { y: 0, rotation: 0 }, { y: 600, rotation: 200, duration: 0.8, ease: "power2.in" }, tShrug + 0.12);
+  tl.to(["#ns-a", "#ns-b"], { rotation: "+=7", duration: 0.16, yoyo: true, repeat: 1, ease: "sine.inOut" }, tShrug + 0.05);
+  tl.to(["#ns-a", "#ns-b"], { opacity: 0, y: -40, filter: "blur(6px)", duration: 0.22, ease: "power2.in", stagger: 0.05 }, tD + 0.2);
+  window.__timelines[SID] = tl;
+})();
+</script>
+</template>

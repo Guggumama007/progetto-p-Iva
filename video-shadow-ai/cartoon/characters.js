@@ -92,8 +92,8 @@
     const aL = o.armL ?? [-150, -120, 0.3], aR = o.armR ?? [150, -120, -0.3];
     return `<g class="contratto"><g transform="scale(${1 / Math.sqrt(sq)},${sq})">
       ${leg(-36, bot, -44, 0, P.copper, -1)}${leg(36, bot, 44, 0, P.copper, 1)}
-      ${arm(-W + 4, -165, aL[0], aL[1], aL[2], aL[3])}
-      ${arm(W - 4, -165, aR[0], aR[1], aR[2], aR[3])}
+      ${o.lf ? "" : arm(-W + 4, -165, aL[0], aL[1], aL[2], aL[3])}
+      ${o.rf ? "" : arm(W - 4, -165, aR[0], aR[1], aR[2], aR[3])}
       ${edge}
       <clipPath id="${cid}"><path d="${bodyCurved}"/></clipPath>
       <path d="${bodyCurved}" fill="${P.paper}"/>
@@ -106,6 +106,7 @@
       <path d="M${W - dog},${top} L${W - dog + 4},${top + dog - 4} L${W},${top + dog}Z" fill="${P.paperShade}" stroke="${P.ink}" stroke-width="${S}" stroke-linejoin="round"/>
       ${brow}${eyes}
       <g id="mouth" transform="translate(${fx},-196)">${mouth(o.mouth ?? "rest")}</g>
+      ${o.lf ? arm(-W + 4, -165, aL[0], aL[1], aL[2], aL[3]) : ""}${o.rf ? arm(W - 4, -165, aR[0], aR[1], aR[2], aR[3]) : ""}
       ${o.sweat ? `<path d="M${W - 6},-318 q12,18 0,26 q-12,-8 0,-26Z" fill="#9fd3ff" stroke="${P.ink}" stroke-width="3.5"/>` : ""}
     </g></g>`;
   }
@@ -133,7 +134,9 @@
     return `<g class="mouse">
       <path d="M0,-232 C6,-262 -30,-286 -52,-268 C-74,-250 -58,-216 -86,-206 C-104,-200 -118,-214 -122,-226" fill="none" stroke="${P.ink}" stroke-width="7" stroke-linecap="round"/>
       <rect x="-136" y="-246" width="24" height="16" rx="3" transform="rotate(-30 -124 -238)" fill="${P.mouseLight}" stroke="${P.ink}" stroke-width="4"/>
-      ${leg(-30, -40, -38, 0, "#f4f4f4", -1)}${leg(30, -40, 40, 0, "#f4f4f4", 1)}
+      ${(() => { const st = o.stride; if (st == null) return leg(-30, -40, -38, 0, "#f4f4f4", -1) + leg(30, -40, 40, 0, "#f4f4f4", 1);
+        const a = Math.sin(st) * 22, l1 = Math.max(0, Math.sin(st)) * 16, l2 = Math.max(0, -Math.sin(st)) * 16;   // ciclo di corsa
+        return leg(-30, -40, -38 - a, -l1, "#f4f4f4", -1) + leg(30, -40, 40 + a, -l2, "#f4f4f4", 1); })()}
       ${arm(-76, -128, aL[0], aL[1], aL[2], aL[3])}${arm(76, -128, aR[0], aR[1], aR[2], aR[3])}${cup}
       <clipPath id="${cid}"><path d="${body}"/></clipPath>
       <path d="${body}" fill="${P.mouse}"/>
@@ -145,6 +148,7 @@
       <rect x="-8" y="-216" width="16" height="30" rx="8" fill="#3a4456" stroke="${P.ink}" stroke-width="4"/>
       <path d="M-56,-230 Q-34,${-244 + (o.browUp ?? 0)} -12,-232 M12,-232 Q34,${-244 + (o.browUp ?? 0)} 56,-230" fill="none" stroke="${P.ink}" stroke-width="7" stroke-linecap="round"/>
       <g transform="translate(0,-110)">${mouth(o.mouth ?? "grin", 0.9)}</g>
+      ${o.cap ? `<g transform="translate(0,-238) rotate(-8)"><path d="M-64,-8 L0,-36 L64,-8 L0,20Z" fill="${P.ink}"/><rect x="-32" y="0" width="64" height="22" rx="4" fill="${P.ink}"/><path d="M46,-6 L52,40" stroke="${P.brass}" stroke-width="5"/><circle cx="52" cy="44" r="7" fill="${P.brass}"/></g>` : ""}
       ${sweat}
     </g>`;
   }

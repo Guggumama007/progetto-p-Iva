@@ -1,0 +1,47 @@
+<template>
+<style>
+  #cartello { position:absolute; inset:0; overflow:hidden; }
+  #cartello svg.stage { position:absolute; left:0; top:0; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:4px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; } .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; }
+  .mono { font-family:'IBM Plex Mono'; font-weight:700; }
+
+</style>
+<div id="cartello" data-composition-id="cartello" data-width="1920" data-height="1080">
+  <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-ignore></svg>
+<div id="ec-k" class="lbl" style="position:absolute; left:160px; top:320px; font-size:30px; color:#d58a52">Corso · Lezione 3</div>
+  <div id="ec-t" class="ttl" style="position:absolute; left:160px; top:370px; font-size:124px; color:#f4f1ea; line-height:1.02">Usare l'IA<br>in sicurezza</div>
+  <div id="ec-r" style="position:absolute; left:160px; top:666px; width:0; height:6px; background:#b5562a"></div>
+  <div id="ec-s" style="position:absolute; left:160px; top:696px; font-family:'Inter'; font-size:36px; color:#c8cdd6">Shadow AI: il contratto che resta a casa.</div>
+</div>
+<script>
+(function () {
+  const SID = "cartello", DUR = 3.600, S0 = 63.573;
+  const LINES = [{"scene": "buongiorno", "start": 2.0, "end": 6.704, "caption": "Buongiorno! Sono un contratto. Tre pagine, due firme… e parecchi dati riservati.", "pauses": [[0.0, 4.704]], "speech": 4.704}, {"scene": "fretta", "start": 7.804, "end": 10.131, "caption": "Ore nove e quindici. Qualcuno ha fretta.", "pauses": [[0.0, 2.327]], "speech": 2.327}, {"scene": "fretta", "start": 11.181, "end": 13.583, "caption": "Mi copia… e mi incolla in un chatbot trovato online.", "pauses": [[0.0, 2.402]], "speech": 2.402}, {"scene": "fretta", "start": 14.933, "end": 16.438, "caption": "Gratis. Che fortuna.", "pauses": [[0.0, 1.505]], "speech": 1.505}, {"scene": "nessuno", "start": 17.638, "end": 22.092, "caption": "Nessuno l'ha vietato. Nessuno l'ha autorizzato. Diciamo che… nessuno ha chiesto.", "pauses": [[0.0, 1.232], [1.344, 4.454]], "speech": 4.454}, {"scene": "viaggio", "start": 23.792, "end": 25.382, "caption": "Trenta secondi, ed è fatto.", "pauses": [[0.0, 1.59]], "speech": 1.59}, {"scene": "viaggio", "start": 27.232, "end": 30.354, "caption": "Peccato che adesso io sia qui. Non so nemmeno in che paese.", "pauses": [[0.0, 3.122]], "speech": 3.122}, {"scene": "nome", "start": 31.154, "end": 32.938, "caption": "Questa si chiama Shadow AI.", "pauses": [[0.0, 1.784]], "speech": 1.784}, {"scene": "rischio", "start": 35.038, "end": 44.723, "caption": "E il rischio è doppio. Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo. Per te: errori che firmi tu, e regole aziendali violate.", "pauses": [[0.0, 1.552], [1.696, 9.685]], "speech": 9.685}, {"scene": "rischio", "start": 45.673, "end": 46.926, "caption": "Firmate da te, eh.", "pauses": [[0.0, 1.253]], "speech": 1.253}, {"scene": "riavvolgi", "start": 48.626, "end": 49.516, "caption": "Riavvolgiamo.", "pauses": [[0.0, 0.89]], "speech": 0.89}, {"scene": "giusta", "start": 51.816, "end": 57.176, "caption": "Stessa azienda, tre cose in più. Uno strumento approvato. Regole chiare. Persone formate.", "pauses": [[0.0, 1.584], [1.696, 4.048], [4.192, 5.36]], "speech": 5.36}, {"scene": "finale", "start": 58.376, "end": 62.273, "caption": "Il lavoro si fa lo stesso, in trenta secondi. E io… resto a casa.", "pauses": [[0.0, 3.897]], "speech": 3.897}];
+  const L = LINES.filter((l) => l.scene === SID).map((l) => ({ ...l, a: l.start - S0, b: l.end - S0 }));
+  const W = (i, word, edge = "start") => Anim.wordTime(L[i], word, edge) - S0;      // istante locale di una parola
+  const MOUTH = (t, idle = "rest") => Anim.mouthAt(LINES, S0 + t, idle);           // lip-sync del Contratto
+  const $ = (s) => document.querySelector("#cartello " + s);
+  const tl = gsap.timeline({ paused: true });
+
+// Scena 10 - Cartello finale (solo il corso). Il Contratto si affaccia dal basso a destra e saluta.
+  const update = Anim.stage($("svg.stage"), `<rect width="1920" height="1080" fill="#141f2e"/><radialGradient id="ecg" cx="78%" cy="85%" r="60%"><stop offset="0" stop-color="#24354f"/><stop offset="1" stop-color="#141f2e"/></radialGradient><rect width="1920" height="1080" fill="url(#ecg)"/>`, Scenes.fx("cool"), (t) => {
+    const u = Anim.ease("back.out(1.6)")(Anim.clamp((t - 0.6) / 0.6));
+    const wave = t > 1.1 ? 22 * Math.sin((t - 1.1) * 10) * Math.exp(-(t - 1.1) * 0.8) : 0;
+    const c = { x: 1540, y: 1080 + 380 * (1 - u) + 40, s: 1.1, r: -6, by: -306, bc: 14, mouth: "smile", lx: -150, ly: -120, rx: 160 + wave, ry: -285, rb: -0.3,
+                open: t > 2.4 && t < 2.6 ? 0.1 : 1, px: -0.4 };
+    return { cam: { x: 960, y: 540, z: 1 }, actors: Anim.place(Anim.contratto(c, t), c) };
+  });
+  Anim.drive(tl, DUR, update);
+  tl.fromTo("#ec-k", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.18 }, 0.2);
+  tl.fromTo("#ec-t", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.22, ease: "power4.out" }, 0.3);
+  tl.fromTo("#ec-r", { width: 0 }, { width: 420, duration: 0.5, ease: "expo.out" }, 0.55);
+  tl.fromTo("#ec-s", { opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2 }, 0.75);
+  window.__timelines[SID] = tl;
+})();
+</script>
+</template>

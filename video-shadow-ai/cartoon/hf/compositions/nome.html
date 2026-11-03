@@ -1,0 +1,56 @@
+<template>
+<style>
+  #nome { position:absolute; inset:0; overflow:hidden; }
+  #nome svg.stage { position:absolute; left:0; top:0; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:4px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; } .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; }
+  .mono { font-family:'IBM Plex Mono'; font-weight:700; }
+
+</style>
+<div id="nome" data-composition-id="nome" data-width="1920" data-height="1080">
+  <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-ignore></svg>
+<div id="nm-row" style="position:absolute; left:0; right:0; top:120px; text-align:center; white-space:nowrap">
+    <span id="nm-0" class="tag ttl" style="position:relative; display:inline-block; margin:0 6px; padding:6px 24px 0; font-size:176px; line-height:1.05; transform:rotate(-6deg)">S</span><span id="nm-1" class="tag ttl" style="position:relative; display:inline-block; margin:0 6px; padding:6px 24px 0; font-size:176px; line-height:1.05; transform:rotate(4deg)">H</span><span id="nm-2" class="tag ttl" style="position:relative; display:inline-block; margin:0 6px; padding:6px 24px 0; font-size:176px; line-height:1.05; transform:rotate(-3deg)">A</span><span id="nm-3" class="tag ttl" style="position:relative; display:inline-block; margin:0 6px; padding:6px 24px 0; font-size:176px; line-height:1.05; transform:rotate(7deg)">D</span><span id="nm-4" class="tag ttl" style="position:relative; display:inline-block; margin:0 6px; padding:6px 24px 0; font-size:176px; line-height:1.05; transform:rotate(-5deg)">O</span><span id="nm-5" class="tag ttl" style="position:relative; display:inline-block; margin:0 6px; padding:6px 24px 0; font-size:176px; line-height:1.05; transform:rotate(3deg)">W</span><span style="display:inline-block; width:56px"></span><span id="nm-6" class="tag ttl cu" style="position:relative; display:inline-block; margin:0 6px; padding:6px 24px 0; font-size:176px; line-height:1.05; transform:rotate(-4deg)">A</span><span id="nm-7" class="tag ttl cu" style="position:relative; display:inline-block; margin:0 6px; padding:6px 24px 0; font-size:176px; line-height:1.05; transform:rotate(6deg)">I</span>
+  </div>
+</div>
+<script>
+(function () {
+  const SID = "nome", DUR = 3.584, S0 = 30.854;
+  const LINES = [{"scene": "buongiorno", "start": 2.0, "end": 6.704, "caption": "Buongiorno! Sono un contratto. Tre pagine, due firme… e parecchi dati riservati.", "pauses": [[0.0, 4.704]], "speech": 4.704}, {"scene": "fretta", "start": 7.804, "end": 10.131, "caption": "Ore nove e quindici. Qualcuno ha fretta.", "pauses": [[0.0, 2.327]], "speech": 2.327}, {"scene": "fretta", "start": 11.181, "end": 13.583, "caption": "Mi copia… e mi incolla in un chatbot trovato online.", "pauses": [[0.0, 2.402]], "speech": 2.402}, {"scene": "fretta", "start": 14.933, "end": 16.438, "caption": "Gratis. Che fortuna.", "pauses": [[0.0, 1.505]], "speech": 1.505}, {"scene": "nessuno", "start": 17.638, "end": 22.092, "caption": "Nessuno l'ha vietato. Nessuno l'ha autorizzato. Diciamo che… nessuno ha chiesto.", "pauses": [[0.0, 1.232], [1.344, 4.454]], "speech": 4.454}, {"scene": "viaggio", "start": 23.792, "end": 25.382, "caption": "Trenta secondi, ed è fatto.", "pauses": [[0.0, 1.59]], "speech": 1.59}, {"scene": "viaggio", "start": 27.232, "end": 30.354, "caption": "Peccato che adesso io sia qui. Non so nemmeno in che paese.", "pauses": [[0.0, 3.122]], "speech": 3.122}, {"scene": "nome", "start": 31.154, "end": 32.938, "caption": "Questa si chiama Shadow AI.", "pauses": [[0.0, 1.784]], "speech": 1.784}, {"scene": "rischio", "start": 35.038, "end": 44.723, "caption": "E il rischio è doppio. Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo. Per te: errori che firmi tu, e regole aziendali violate.", "pauses": [[0.0, 1.552], [1.696, 9.685]], "speech": 9.685}, {"scene": "rischio", "start": 45.673, "end": 46.926, "caption": "Firmate da te, eh.", "pauses": [[0.0, 1.253]], "speech": 1.253}, {"scene": "riavvolgi", "start": 48.626, "end": 49.516, "caption": "Riavvolgiamo.", "pauses": [[0.0, 0.89]], "speech": 0.89}, {"scene": "giusta", "start": 51.816, "end": 57.176, "caption": "Stessa azienda, tre cose in più. Uno strumento approvato. Regole chiare. Persone formate.", "pauses": [[0.0, 1.584], [1.696, 4.048], [4.192, 5.36]], "speech": 5.36}, {"scene": "finale", "start": 58.376, "end": 62.273, "caption": "Il lavoro si fa lo stesso, in trenta secondi. E io… resto a casa.", "pauses": [[0.0, 3.897]], "speech": 3.897}];
+  const L = LINES.filter((l) => l.scene === SID).map((l) => ({ ...l, a: l.start - S0, b: l.end - S0 }));
+  const W = (i, word, edge = "start") => Anim.wordTime(L[i], word, edge) - S0;      // istante locale di una parola
+  const MOUTH = (t, idle = "rest") => Anim.mouthAt(LINES, S0 + t, idle);           // lip-sync del Contratto
+  const $ = (s) => document.querySelector("#nome " + s);
+  const tl = gsap.timeline({ paused: true });
+
+// Scena 5 - "Questa si chiama Shadow AI." I server si sporgono e sogghignano, il contratto deglutisce,
+  // le lettere di carta cadono una alla volta (ogni colpo fa tremare un po' la camera).
+  const tS = W(0, "Shadow"), step = 0.075;
+  const hits = Array.from({ length: 8 }, (_, i) => tS + i * step + 0.2);
+  const KC = [
+    [0, { x: 960, y: 890, s: 0.95, open: 1.08, bc: 22, by: -302, px: 0.1, py: -0.1, lx: -90, ly: -140, rx: 90, ry: -140, idleMouth: "worried", sweat: true }],
+    [tS - 0.1, { px: 0, py: -1, open: 1.2, by: -314 }, "power2.out"],                                // alza lo sguardo verso il titolo
+    [hits[7] + 0.2, { sq: 0.92 }, "power2.in"], [hits[7] + 0.45, { sq: 1.0, py: 0.2, px: 0 }, "power2.out"],   // deglutisce
+  ];
+  const CAM = [[0, { x: 960, y: 640, z: 1.16 }], [DUR, { x: 960, y: 600, z: 1.24 }, "power1.inOut"]];
+  const update = Anim.stage($("svg.stage"), Scenes.serverRoom({ fx: false, servers: false }), Scenes.fx("night"), (t) => {
+    const c = Anim.at(KC, t); c.mouth = MOUTH(t, c.idleMouth); c.blink = Anim.blinkAt([0.6], t);
+    const lean = Anim.ease("power2.inOut")(Anim.clamp((t - 0.1) / 1.2)) * 7;
+    const cam = Anim.at(CAM, t); for (const h of hits) { cam.x += Anim.shake(t, h, 5, 0.18); cam.y += Anim.shake(t, h, 4, 0.18); }
+    let a = Scenes.racks(Array(12).fill(1), lean);
+    a += Anim.shadow({ x: 960, y: 890, s: c.s, ground: 890 }, 120, "#000", 0.45);
+    a += `<g filter="url(#fxCopy)">${Anim.place(Anim.contratto(c, t), c)}</g>`;
+    const flick = 0.85 + 0.15 * Math.sin(t * 37) * Math.sin(t * 13);
+    return { cam, actors: a, over: `<rect width="1920" height="1080" fill="#000" opacity="${(1 - flick) * 0.6}"/>` };
+  });
+  Anim.drive(tl, DUR, update);
+  hits.forEach((h, i) => tl.fromTo("#nm-" + i, { opacity: 0, y: -160, scale: 1.35 }, { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: "power4.in" }, h - 0.2));
+  tl.to("#nm-row", { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power2.in" }, DUR - 0.25);
+  window.__timelines[SID] = tl;
+})();
+</script>
+</template>

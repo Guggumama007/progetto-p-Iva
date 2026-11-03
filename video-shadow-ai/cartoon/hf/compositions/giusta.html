@@ -1,0 +1,77 @@
+<template>
+<style>
+  #giusta { position:absolute; inset:0; overflow:hidden; }
+  #giusta svg.stage { position:absolute; left:0; top:0; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:4px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; } .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; }
+  .mono { font-family:'IBM Plex Mono'; font-weight:700; }
+
+</style>
+<div id="giusta" data-composition-id="giusta" data-width="1920" data-height="1080">
+  <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-ignore></svg>
+
+</div>
+<script>
+(function () {
+  const SID = "giusta", DUR = 7.160, S0 = 50.516;
+  const LINES = [{"scene": "buongiorno", "start": 2.0, "end": 6.704, "caption": "Buongiorno! Sono un contratto. Tre pagine, due firme… e parecchi dati riservati.", "pauses": [[0.0, 4.704]], "speech": 4.704}, {"scene": "fretta", "start": 7.804, "end": 10.131, "caption": "Ore nove e quindici. Qualcuno ha fretta.", "pauses": [[0.0, 2.327]], "speech": 2.327}, {"scene": "fretta", "start": 11.181, "end": 13.583, "caption": "Mi copia… e mi incolla in un chatbot trovato online.", "pauses": [[0.0, 2.402]], "speech": 2.402}, {"scene": "fretta", "start": 14.933, "end": 16.438, "caption": "Gratis. Che fortuna.", "pauses": [[0.0, 1.505]], "speech": 1.505}, {"scene": "nessuno", "start": 17.638, "end": 22.092, "caption": "Nessuno l'ha vietato. Nessuno l'ha autorizzato. Diciamo che… nessuno ha chiesto.", "pauses": [[0.0, 1.232], [1.344, 4.454]], "speech": 4.454}, {"scene": "viaggio", "start": 23.792, "end": 25.382, "caption": "Trenta secondi, ed è fatto.", "pauses": [[0.0, 1.59]], "speech": 1.59}, {"scene": "viaggio", "start": 27.232, "end": 30.354, "caption": "Peccato che adesso io sia qui. Non so nemmeno in che paese.", "pauses": [[0.0, 3.122]], "speech": 3.122}, {"scene": "nome", "start": 31.154, "end": 32.938, "caption": "Questa si chiama Shadow AI.", "pauses": [[0.0, 1.784]], "speech": 1.784}, {"scene": "rischio", "start": 35.038, "end": 44.723, "caption": "E il rischio è doppio. Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo. Per te: errori che firmi tu, e regole aziendali violate.", "pauses": [[0.0, 1.552], [1.696, 9.685]], "speech": 9.685}, {"scene": "rischio", "start": 45.673, "end": 46.926, "caption": "Firmate da te, eh.", "pauses": [[0.0, 1.253]], "speech": 1.253}, {"scene": "riavvolgi", "start": 48.626, "end": 49.516, "caption": "Riavvolgiamo.", "pauses": [[0.0, 0.89]], "speech": 0.89}, {"scene": "giusta", "start": 51.816, "end": 57.176, "caption": "Stessa azienda, tre cose in più. Uno strumento approvato. Regole chiare. Persone formate.", "pauses": [[0.0, 1.584], [1.696, 4.048], [4.192, 5.36]], "speech": 5.36}, {"scene": "finale", "start": 58.376, "end": 62.273, "caption": "Il lavoro si fa lo stesso, in trenta secondi. E io… resto a casa.", "pauses": [[0.0, 3.897]], "speech": 3.897}];
+  const L = LINES.filter((l) => l.scene === SID).map((l) => ({ ...l, a: l.start - S0, b: l.end - S0 }));
+  const W = (i, word, edge = "start") => Anim.wordTime(L[i], word, edge) - S0;      // istante locale di una parola
+  const MOUTH = (t, idle = "rest") => Anim.mouthAt(LINES, S0 + t, idle);           // lip-sync del Contratto
+  const $ = (s) => document.querySelector("#giusta " + s);
+  const tl = gsap.timeline({ paused: true });
+
+// Scena 8 - La versione giusta. Stessa scrivania, ma sullo schermo c'e' l'assistente aziendale. La cupola di carta da
+  // lucido (l'azienda) scende e protegge. "tre cose in piu'": tre cartellini; l'Assistente spunta dallo schermo; il timbro
+  // cade su ogni parola (approvato / chiare / formate); arriva il Mouse, calmo, con il tocco da laureato: "formato".
+  const SCR = { x: 465, y: 602 }, w = (x, e) => W(0, x, e);
+  const tTre = w("tre"), tStr = w("strumento"), tPers = w("Persone");
+  const hits = [w("approvato", "end") - 0.08, w("chiare", "end") - 0.08, w("formate", "end") - 0.08];
+  const BOARD = { x: 960, y: 70 };                      // lavagnetta appesa in alto al centro
+  const box = (i) => ({ x: BOARD.x - 390 + 82, y: BOARD.y + 120 + i * 72 });
+  const domeY = (t) => { const u = Anim.clamp((t - 0.1) / 0.75); return -760 * (1 - Anim.ease("bounce.out")(u)); };
+  const KC = [
+    [0, { x: 1000, y: 864, s: 1.2, by: -302, bc: 10, px: 0, py: 0, lx: -150, ly: -120, rx: 150, ry: -120, idleMouth: "rest", lid: 0 }],
+    [0.3, { py: -1, px: 0.2, open: 1.12, by: -312, bc: 16 }, "power2.out"],                         // guarda la cupola che scende
+    [1.05, { py: 0, px: 0, open: 1, by: -304, bc: 12, idleMouth: "smile" }, "power2.out"],
+    [tStr, { px: -1, turn: -0.2 }, "power2.out"],                                                    // l'Assistente
+    [hits[0] - 0.4, { px: -0.5, py: -1, turn: 0 }, "power2.out"], [hits[1] - 0.3, { px: -0.4, py: -0.9 }, "power2.out"], [hits[2] - 0.3, { px: -0.3, py: -0.8 }, "power2.out"],
+    [DUR, { px: 0.2, py: 0, idleMouth: "smile" }, "power2.inOut"],
+  ];
+  const KA = [[0, { s: 0, mouth: "smile" }], [tStr - 0.12, { s: 0 }], [tStr + 0.3, { s: 0.8, rx: 196, ry: -258, rh: "thumb" }, "back.out(2.2)"]];
+  const KM = [[0, { x: 2200, s: 0.82, run: 0, walk: 1 }], [tPers - 0.7, { x: 2200 }], [hits[2] - 0.1, { x: 1520, walk: 0 }, "power2.out"], [hits[2] + 0.4, { rx: 120, ry: -230, rh: "open" }, "back.out(2)"]];
+  const update = Anim.stage($("svg.stage"), Scenes.office({ fx: false, screen: "azienda", warm: 1.2 }), Scenes.fx("warm"), (t) => {
+    const c = Anim.at(KC, t); c.blink = Anim.blinkAt([1.6, hits[1] + 0.5], t); c.mouth = MOUTH(t, c.idleMouth);
+    for (const h of hits) { const d = t - h; if (d >= 0 && d < 0.25) c.sq = d < 0.08 ? 0.95 : 1.02; }      // annuisce a ogni timbro
+    let a = `<g transform="translate(1470,230)">${Props.secondHand(t + 15)}</g><g transform="translate(1600,642)">${Props.steam(t)}</g>`;
+    const as = Anim.at(KA, t);
+    if (as.s > 0.01) a += Anim.place(Anim.assistente(as, t), { x: SCR.x, y: SCR.y + 70, s: as.s });
+    // il Mouse "formato"
+    const m = Anim.at(KM, t);
+    if (m.x < 2150) { const mm = { ...m, cap: true, sweat: false, mouth: "smile", eyes: 1, px: -0.6, lid: 0.2, ct: 4 }; if (m.walk > 0.05) { mm.stride = t * 11; mm.y = 868 - Math.abs(Math.sin(t * 5.5)) * 8; } else mm.y = 868;
+      a += Anim.shadow({ ...mm, ground: 868 }, 100) + Anim.place(Anim.mouse(mm, t), mm); }
+    a += Anim.shadow({ ...c, ground: 864 }, 135) + Anim.place(Anim.contratto(c, t), c);
+    // la lavagnetta "Tre cose in piu'" scende sui fili; il timbro spunta ogni casella sulla sua parola
+    const bd = Anim.ease("back.out(1.4)")(Anim.clamp((t - tTre + 0.1) / 0.55));
+    if (bd > 0) {
+      const checks = hits.map((h) => Anim.clamp((t - h) / 0.06)), lit = [w("Uno"), w("Regole"), w("Persone")].map((x) => Anim.clamp((t - x + 0.1) / 0.2));
+      a += `<g transform="translate(${BOARD.x},${BOARD.y - 420 * (1 - bd)}) rotate(${2 * Math.sin(t * 2.2) * (1 - Anim.clamp((t - tTre) / 3))})">${Props.checklist({ checks, lit })}</g>`;
+    }
+    let sx = 0, sy = 0, sh = -1;
+    hits.forEach((h, i) => { const { x, y } = box(i), d = t - h;
+      if (d > -0.5 && d < 0.35) { sh = i; sx = x; sy = d < -0.18 ? y - 220 : d < 0 ? y - 220 * Anim.ease("power3.in")(-d / 0.18) : d < 0.08 ? y : y - 220 * Anim.ease("power2.out")((d - 0.08) / 0.27); } });
+    if (sh >= 0) a += `<g transform="translate(${sx},${sy + 20}) scale(.8)">${Props.stamp()}</g>`;
+    // la cupola (davanti a tutto, trasparente)
+    a += `<g transform="translate(960,${900 + domeY(t)})">${Props.dome({ glow: Math.max(0, 1 - Math.abs(t - 0.85) / 0.4) * 0.8 })}</g>`;
+    const cam = { x: 960, y: 560, z: 1.0 }; cam.y += Anim.shake(t, 0.85, 6, 0.3); for (const h of hits) cam.y += Anim.shake(t, h, 5, 0.18);
+    return { cam, actors: a };
+  });
+  Anim.drive(tl, DUR, update);
+  window.__timelines[SID] = tl;
+})();
+</script>
+</template>

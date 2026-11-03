@@ -4,3 +4,8 @@ hyperframes/.hyperframes/
 hyperframes/assets/audio/
 *.blend1
 __pycache__/
+cartoon/hf/.hyperframes/
+cartoon/hf/assets/audio/
+audio/cartoon_music.wav
+audio/cartoon_sfx.wav
+audio/cartoon_voice.wav

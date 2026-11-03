@@ -1,0 +1,100 @@
+<template>
+<style>
+  #fretta { position:absolute; inset:0; overflow:hidden; }
+  #fretta svg.stage { position:absolute; left:0; top:0; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:4px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; } .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; }
+  .mono { font-family:'IBM Plex Mono'; font-weight:700; }
+
+</style>
+<div id="fretta" data-composition-id="fretta" data-width="1920" data-height="1080">
+  <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-ignore></svg>
+
+</div>
+<script>
+(function () {
+  const SID = "fretta", DUR = 9.834, S0 = 7.304;
+  const LINES = [{"scene": "buongiorno", "start": 2.0, "end": 6.704, "caption": "Buongiorno! Sono un contratto. Tre pagine, due firme… e parecchi dati riservati.", "pauses": [[0.0, 4.704]], "speech": 4.704}, {"scene": "fretta", "start": 7.804, "end": 10.131, "caption": "Ore nove e quindici. Qualcuno ha fretta.", "pauses": [[0.0, 2.327]], "speech": 2.327}, {"scene": "fretta", "start": 11.181, "end": 13.583, "caption": "Mi copia… e mi incolla in un chatbot trovato online.", "pauses": [[0.0, 2.402]], "speech": 2.402}, {"scene": "fretta", "start": 14.933, "end": 16.438, "caption": "Gratis. Che fortuna.", "pauses": [[0.0, 1.505]], "speech": 1.505}, {"scene": "nessuno", "start": 17.638, "end": 22.092, "caption": "Nessuno l'ha vietato. Nessuno l'ha autorizzato. Diciamo che… nessuno ha chiesto.", "pauses": [[0.0, 1.232], [1.344, 4.454]], "speech": 4.454}, {"scene": "viaggio", "start": 23.792, "end": 25.382, "caption": "Trenta secondi, ed è fatto.", "pauses": [[0.0, 1.59]], "speech": 1.59}, {"scene": "viaggio", "start": 27.232, "end": 30.354, "caption": "Peccato che adesso io sia qui. Non so nemmeno in che paese.", "pauses": [[0.0, 3.122]], "speech": 3.122}, {"scene": "nome", "start": 31.154, "end": 32.938, "caption": "Questa si chiama Shadow AI.", "pauses": [[0.0, 1.784]], "speech": 1.784}, {"scene": "rischio", "start": 35.038, "end": 44.723, "caption": "E il rischio è doppio. Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo. Per te: errori che firmi tu, e regole aziendali violate.", "pauses": [[0.0, 1.552], [1.696, 9.685]], "speech": 9.685}, {"scene": "rischio", "start": 45.673, "end": 46.926, "caption": "Firmate da te, eh.", "pauses": [[0.0, 1.253]], "speech": 1.253}, {"scene": "riavvolgi", "start": 48.626, "end": 49.516, "caption": "Riavvolgiamo.", "pauses": [[0.0, 0.89]], "speech": 0.89}, {"scene": "giusta", "start": 51.816, "end": 57.176, "caption": "Stessa azienda, tre cose in più. Uno strumento approvato. Regole chiare. Persone formate.", "pauses": [[0.0, 1.584], [1.696, 4.048], [4.192, 5.36]], "speech": 5.36}, {"scene": "finale", "start": 58.376, "end": 62.273, "caption": "Il lavoro si fa lo stesso, in trenta secondi. E io… resto a casa.", "pauses": [[0.0, 3.897]], "speech": 3.897}];
+  const L = LINES.filter((l) => l.scene === SID).map((l) => ({ ...l, a: l.start - S0, b: l.end - S0 }));
+  const W = (i, word, edge = "start") => Anim.wordTime(L[i], word, edge) - S0;      // istante locale di una parola
+  const MOUTH = (t, idle = "rest") => Anim.mouthAt(LINES, S0 + t, idle);           // lip-sync del Contratto
+  const $ = (s) => document.querySelector("#fretta " + s);
+  const tl = gsap.timeline({ paused: true });
+
+// Scena 2 - La fretta. Inserto sull'orologio ("Ore nove e quindici"), il Mouse arriva di corsa con il caffe' e frena
+  // derapando; "Mi copia...": lampo, una copia del Contratto salta fuori e il Mouse la trascina nello schermo;
+  // ChatGratis spunta dal portatile a braccia aperte; "Gratis. Che fortuna.": primo piano impassibile.
+  const tQ = W(0, "Qualcuno"), tF = W(0, "fretta"), tCopia = W(1, "copia"), tInc = W(1, "incolla"), tChat = W(1, "chatbot"), tGr = L[2].a;
+  const SCR = { x: 465, y: 602 };                                      // centro dello schermo del portatile
+  const CAM = [
+    [0, { x: 1470, y: 236, z: 2.3 }], [tQ - 0.06, { x: 1466, y: 238, z: 2.36 }, "none"],     // inserto: l'orologio
+    [tQ - 0.05, { x: 960, y: 560, z: 1.0 }, "none"],                                        // stacco sul campo largo
+    [tCopia, { x: 900, y: 560, z: 1.04 }, "power2.inOut"], [tChat + 0.4, { x: 760, y: 560, z: 1.08 }, "power2.inOut"],
+    [tGr - 0.11, { x: 760, y: 560, z: 1.08 }, "none"], [tGr - 0.1, { x: 1010, y: 640, z: 1.45 }, "none"],   // stacco: primo piano
+    [DUR, { x: 1004, y: 646, z: 1.5 }, "power1.inOut"],
+  ];
+  const KC = [   // il Contratto
+    [0, { x: 1000, y: 864, s: 1.22, by: -300, bc: 8, px: 0, py: 0, lid: 0.2, lx: -150, ly: -120, rx: 150, ry: -120, turn: 0, idleMouth: "rest" }],
+    [tQ + 0.2, { px: 1, py: -0.1, by: -308, bc: 14, lid: 0, turn: 0.2 }, "power2.out"],        // "Qualcuno ha fretta": guarda il Mouse
+    [tF + 0.4, { sq: 0.97 }], [tF + 0.55, { sq: 1.0 }],
+    [tCopia - 0.02, { sq: 1 }], [tCopia + 0.06, { sq: 0.86, by: -316, bc: 18, lx: -170, ly: -210, rx: 170, ry: -210 }, "power4.out"],   // il "clic" della copia
+    [tCopia + 0.3, { sq: 1.04 }, "back.out(2)"], [tCopia + 0.45, { sq: 1 }],
+    [tInc - 0.3, { px: -1, py: 0.2, turn: -0.3, bc: 22, by: -300, lx: -90, ly: -150, rx: 90, ry: -150 }, "power2.inOut"],   // segue la copia, preoccupato
+    [tChat, { px: -1, py: 0.3 }],
+    [tGr - 0.1, { px: 0, py: 0, turn: 0, lid: 0.52, bc: 0, bt: -2, by: -292, lx: -140, ly: -100, rx: 140, ry: -100, idleMouth: "flat" }, "none"],  // impassibile
+    [DUR, { lid: 0.55 }],
+  ];
+  const KM = [   // il Mouse frettoloso
+    [0, { x: 2250, y: 868, s: 0.95, r: -12, run: 1, px: -0.8, mouth: "grin", ct: 24 }],
+    [tQ, { x: 2250 }], [tF + 0.28, { x: 1440, r: 8, run: 0, ct: -14 }, "power2.out"],         // arriva e frena
+    [tF + 0.5, { r: -3, ct: 10 }, "back.out(2)"], [tF + 0.7, { r: 0, ct: 6 }],
+    [tCopia - 0.35, { lx: -130, ly: -150 }], [tCopia - 0.05, { lx: -330, ly: -200, lb: 0.2 }, "power3.out"],   // allunga la mano
+    [tCopia + 0.25, { lx: -250, ly: -260, lh: "point" }, "power2.out"],
+    [tInc + 0.2, { lx: -380, ly: -150, px: -1 }, "power2.inOut"],                                         // trascina verso lo schermo
+    [tChat + 0.3, { lx: -140, ly: -150, lh: "open", mouth: "smile", px: -0.6 }, "power2.out"],
+  ];
+  const KK = [   // la copia
+    [0, { o: 0, x: 1000, y: 864, s: 0.3, r: 0 }],
+    [tCopia, { o: 0 }], [tCopia + 0.02, { o: 1, x: 1000, y: 864, s: 0.5 }, "none"],
+    [tCopia + 0.32, { x: 1170, y: 760, s: 0.9, r: 8 }, "back.out(1.6)"],
+    [tInc - 0.15, { x: 1060, y: 620, s: 0.85, r: -10 }, "sine.inOut"],
+    [tInc + 0.25, { x: SCR.x, y: SCR.y + 40, s: 0.12, r: -340 }, "power3.in"], [tInc + 0.27, { o: 0 }, "none"],
+  ];
+  const KG = [   // ChatGratis
+    [0, { o: 0, x: SCR.x, y: SCR.y + 120, s: 0.05, lx: -150, ly: -120, rx: 150, ry: -120, mouth: "grin", lid: 0.42, px: 0.6 }],
+    [tChat - 0.12, { o: 0 }], [tChat - 0.1, { o: 1 }, "none"],
+    [tChat + 0.35, { s: 0.86, y: SCR.y + 64, lx: -215, ly: -265, rx: 210, ry: -265 }, "back.out(2.2)"],   // spunta a braccia aperte
+    [tGr + 0.9, { rx: 220, ry: -250, rh: "thumb", px: 1 }, "back.out(2)"],                              // "Che fortuna": pollice su
+  ];
+  const flashes = [tCopia, tInc + 0.26];
+  const blinks = [tF + 1.0, tChat + 0.8];
+  const update = Anim.stage($("svg.stage"), Scenes.office({ fx: false }), Scenes.fx("warm"), (t) => {
+    const c = Anim.at(KC, t); c.blink = Anim.blinkAt(blinks, t); c.mouth = MOUTH(t, c.idleMouth);
+    const m = Anim.at(KM, t), k = Anim.at(KK, t), g = Anim.at(KG, t);
+    if (m.run > 0.05) { m.stride = t * 22; m.y -= Math.abs(Math.sin(t * 11)) * 20 * m.run; }
+    let a = `<g transform="translate(1470,230)">${Props.secondHand(t + 13)}</g><g transform="translate(1600,642)">${Props.steam(t)}</g>`;
+    // schermo che "inghiotte" la copia
+    const fl = flashes.reduce((v, f) => Math.max(v, Math.max(0, 1 - Math.abs(t - f) / 0.12)), 0);
+    if (fl > 0) a += `<rect x="264" y="488" width="402" height="228" rx="6" fill="#fff" opacity="${fl * 0.9}"/>`;
+    if (g.o > 0) a += Anim.place(Anim.chatgratis(g, t), g) +
+      [[-150, -300], [170, -330], [230, -150]].map(([sx, sy], i) => `<g transform="translate(${g.x + sx * g.s},${g.y + sy * g.s}) rotate(${t * 90 + i * 40}) scale(${g.s})">${Props.sparkle(16, i ? "#fff" : Chars.P.gratisPink)}</g>`).join("");
+    a += Anim.shadow({ ...c, ground: 864 }, 135);
+    a += Anim.place(Anim.contratto(c, t), c);
+    if (m.x < 2150) {
+      a += Anim.shadow({ ...m, ground: 868 }, 110);
+      if (m.run > 0.05) a += `<g transform="translate(${m.x + 150},${m.y - 40})">${Props.speedLines(3, 140 * m.run, 0.6)}</g>`;
+      a += Anim.place(Anim.mouse(m, t), m);
+    }
+    if (k.o > 0) a += `<g filter="url(#fxCopy)">${Anim.place(Anim.contratto({ px: -0.6, py: -0.2, open: 1.15, by: -312, bc: 16, mouth: "O", lx: -160, ly: -230, rx: 160, ry: -230, idle: 0 }, t), k)}</g>`;
+    if (fl > 0 && t < tCopia + 0.2) a += `<circle cx="1000" cy="640" r="${220 * (1 - fl) + 40}" fill="none" stroke="#fff" stroke-width="${10 * fl}" opacity="${fl}"/>`;
+    return { cam: Anim.at(CAM, t), actors: a };
+  });
+  Anim.drive(tl, DUR, update);
+  window.__timelines[SID] = tl;
+})();
+</script>
+</template>

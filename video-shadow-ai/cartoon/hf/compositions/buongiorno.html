@@ -1,0 +1,68 @@
+<template>
+<style>
+  #buongiorno { position:absolute; inset:0; overflow:hidden; }
+  #buongiorno svg.stage { position:absolute; left:0; top:0; }
+
+  .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;
+         box-shadow: 0 3px 0 rgba(60,40,20,.25), 0 14px 30px rgba(0,0,0,.28); border-radius:4px; }
+  .tag.cu { background-color:#b5562a; color:#fbf4ea; } .tag.navy { background-color:#16233a; color:#f1ebde; }
+  .lbl { font-family:'Inter'; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+  .ttl { font-family:'EB Garamond'; font-weight:700; }
+  .mono { font-family:'IBM Plex Mono'; font-weight:700; }
+
+</style>
+<div id="buongiorno" data-composition-id="buongiorno" data-width="1920" data-height="1080">
+  <svg class="stage" width="1920" height="1080" viewBox="0 0 1920 1080" data-layout-ignore></svg>
+<div id="bg-lez" class="tag navy lbl" style="left:84px; top:70px; padding:12px 22px; font-size:28px; transform:rotate(-1.5deg)">Lezione 3 · Shadow AI</div>
+</div>
+<script>
+(function () {
+  const SID = "buongiorno", DUR = 7.304, S0 = 0.000;
+  const LINES = [{"scene": "buongiorno", "start": 2.0, "end": 6.704, "caption": "Buongiorno! Sono un contratto. Tre pagine, due firme… e parecchi dati riservati.", "pauses": [[0.0, 4.704]], "speech": 4.704}, {"scene": "fretta", "start": 7.804, "end": 10.131, "caption": "Ore nove e quindici. Qualcuno ha fretta.", "pauses": [[0.0, 2.327]], "speech": 2.327}, {"scene": "fretta", "start": 11.181, "end": 13.583, "caption": "Mi copia… e mi incolla in un chatbot trovato online.", "pauses": [[0.0, 2.402]], "speech": 2.402}, {"scene": "fretta", "start": 14.933, "end": 16.438, "caption": "Gratis. Che fortuna.", "pauses": [[0.0, 1.505]], "speech": 1.505}, {"scene": "nessuno", "start": 17.638, "end": 22.092, "caption": "Nessuno l'ha vietato. Nessuno l'ha autorizzato. Diciamo che… nessuno ha chiesto.", "pauses": [[0.0, 1.232], [1.344, 4.454]], "speech": 4.454}, {"scene": "viaggio", "start": 23.792, "end": 25.382, "caption": "Trenta secondi, ed è fatto.", "pauses": [[0.0, 1.59]], "speech": 1.59}, {"scene": "viaggio", "start": 27.232, "end": 30.354, "caption": "Peccato che adesso io sia qui. Non so nemmeno in che paese.", "pauses": [[0.0, 3.122]], "speech": 3.122}, {"scene": "nome", "start": 31.154, "end": 32.938, "caption": "Questa si chiama Shadow AI.", "pauses": [[0.0, 1.784]], "speech": 1.784}, {"scene": "rischio", "start": 35.038, "end": 44.723, "caption": "E il rischio è doppio. Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo. Per te: errori che firmi tu, e regole aziendali violate.", "pauses": [[0.0, 1.552], [1.696, 9.685]], "speech": 9.685}, {"scene": "rischio", "start": 45.673, "end": 46.926, "caption": "Firmate da te, eh.", "pauses": [[0.0, 1.253]], "speech": 1.253}, {"scene": "riavvolgi", "start": 48.626, "end": 49.516, "caption": "Riavvolgiamo.", "pauses": [[0.0, 0.89]], "speech": 0.89}, {"scene": "giusta", "start": 51.816, "end": 57.176, "caption": "Stessa azienda, tre cose in più. Uno strumento approvato. Regole chiare. Persone formate.", "pauses": [[0.0, 1.584], [1.696, 4.048], [4.192, 5.36]], "speech": 5.36}, {"scene": "finale", "start": 58.376, "end": 62.273, "caption": "Il lavoro si fa lo stesso, in trenta secondi. E io… resto a casa.", "pauses": [[0.0, 3.897]], "speech": 3.897}];
+  const L = LINES.filter((l) => l.scene === SID).map((l) => ({ ...l, a: l.start - S0, b: l.end - S0 }));
+  const W = (i, word, edge = "start") => Anim.wordTime(L[i], word, edge) - S0;      // istante locale di una parola
+  const MOUTH = (t, idle = "rest") => Anim.mouthAt(LINES, S0 + t, idle);           // lip-sync del Contratto
+  const $ = (s) => document.querySelector("#buongiorno " + s);
+  const tl = gsap.timeline({ paused: true });
+
+// Scena 1 - Buongiorno: si sveglia, saluta, si presenta fiero, mostra pagine e firma, confida il segreto.
+  const w = (word) => W(0, word);
+  const t0 = w("Buongiorno"), tSono = w("Sono"), tTre = w("Tre"), tDue = w("due"), tFirme = w("firme"), tE = w("e parecchi");
+  const tw = t0 - 0.85;                                  // il risveglio avviene appena la camera arriva
+  const K = [
+    [0, { x: 1000, y: 864, s: 1.22, open: 0, by: -288, bc: 2, sq: 0.96, lx: -120, ly: -92, rx: 120, ry: -92, lb: 0.2, rb: -0.2, r: 0, turn: 0, px: 0, py: 0, lid: 0, bt: 0, pages: 0, idleMouth: "rest", rh: "open", lh: "open" }],
+    [tw - 0.15, { open: 0, sq: 0.96 }],
+    [tw, { open: 1.18, by: -312, bc: 14, sq: 1.06, lx: -158, ly: -160, rx: 158, ry: -160 }, "back.out(2)"],          // sveglia di soprassalto
+    [tw + 0.25, { open: 1, by: -300, bc: 8, sq: 1, lx: -150, ly: -120, rx: 150, ry: -120 }, "power2.out"],
+    [t0 - 0.12, { rx: 162, ry: -98 }, "power2.in"],                                                              // anticipazione del saluto
+    [t0 + 0.12, { rx: 150, ry: -288, rb: -0.35, by: -306, bc: 14 }, "back.out(1.7)"],
+    [t0 + 0.32, { rx: 186, ry: -270 }, "sine.inOut"], [t0 + 0.52, { rx: 140, ry: -292 }, "sine.inOut"], [t0 + 0.72, { rx: 182, ry: -272 }, "sine.inOut"],
+    [tSono, { rf: true, rx: 28, ry: -172, rb: -0.7, lid: 0.22, by: -304, bc: 4, sq: 1.03, r: -2 }, "power3.out"],                // fiero: mano sul petto
+    [tTre - 0.05, { pages: 0 }],
+    [tTre + 0.25, { rf: false, pages: 1, lid: 0, rx: 150, ry: -150, rb: -0.3, r: 0 }, "back.out(1.8)"],                          // "Tre pagine"
+    [tDue, { rf: true, rx: 64, ry: -92, rb: -0.6, rh: "point", py: 0.7, px: 0.3, bc: 10 }, "power2.inOut"],                     // indica la firma
+    [tFirme + 0.2, { pages: 0 }, "power2.in"],
+    [tE, { rf: false, lf: true, s: 1.3, y: 870, rh: "open", rx: 150, ry: -120, rb: -0.3, lx: -46, ly: -206, lb: 0.6, px: -0.85, py: 0, lid: 0.32, bt: 8, bc: 6, turn: 0.15 }, "power2.inOut"],
+    [L[0].b + 0.05, { idleMouth: "smirk" }],
+    [DUR, { px: 0, lid: 0.25, bt: 4 }, "power1.inOut"],
+  ];
+  const CAM = [[0, { x: 1470, y: 236, z: 2.5 }], [0.9, { x: 1462, y: 240, z: 2.4 }, "none"],
+               [tw + 0.05, { x: 980, y: 560, z: 1.0 }, "power3.inOut"], [DUR, { x: 1000, y: 610, z: 1.12 }, "power1.inOut"]];
+  const blinks = [t0 + 1.25, t0 + 3.55];
+  const update = Anim.stage($("svg.stage"), Scenes.office({ fx: false }), Scenes.fx("warm"), (t) => {
+    const c = Anim.at(K, t);
+    c.blink = Anim.blinkAt(blinks, t); c.mouth = MOUTH(t, c.idleMouth);
+    let a = `<g transform="translate(1470,230)">${Props.secondHand(t + 12)}</g><g transform="translate(1600,642)">${Props.steam(t)}</g>`;
+    a += Anim.shadow({ ...c, ground: 864 }, 135);
+    if (c.pages > 0.01) a += `<g transform="translate(${c.x},${c.y}) scale(${c.s})">` + [-1, 1].map((sd) =>
+      `<g transform="translate(${sd * 52 * c.pages},-58) rotate(${sd * 13 * c.pages})">${Props.sheet({ o: Math.min(1, c.pages * 1.6) })}</g>`).join("") + `</g>`;
+    a += Anim.place(Anim.contratto(c, t), c);
+    return { cam: Anim.at(CAM, t), actors: a };
+  });
+  Anim.drive(tl, DUR, update);
+  tl.fromTo("#bg-lez", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out" }, 0.25);
+  tl.to("#bg-lez", { opacity: 0, filter: "blur(6px)", duration: 0.2 }, DUR - 0.6);
+  window.__timelines[SID] = tl;
+})();
+</script>
+</template>

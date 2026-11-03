@@ -63,20 +63,25 @@
         <path d="M-14,-20 q-18,-30 4,-56 q18,-24 -2,-52 M14,-24 q-14,-26 4,-48" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity=".45"/></g>
       <g transform="translate(90,604)"><path d="M-40,60 L40,60 L32,140 L-32,140Z" fill="#b5562a"/><path d="M0,60 C-10,10 -60,0 -70,-40 C-30,-30 -10,0 0,60 C6,0 20,-60 60,-70 C50,-20 20,10 0,60" fill="#5d7f68"/><path d="M0,60 C10,20 40,10 70,0 C50,40 20,50 0,60" fill="#6f957a"/></g>
       <g transform="translate(1800,684)"><rect x="-34" y="0" width="68" height="100" rx="8" fill="#5d7f78"/><rect x="-24" y="-60" width="8" height="70" rx="3" fill="${P.copper}" transform="rotate(-8)"/><rect x="2" y="-74" width="8" height="84" rx="3" fill="#f1ebde" transform="rotate(6)"/><rect x="16" y="-50" width="8" height="60" rx="3" fill="${P.navyMid}" transform="rotate(12)"/></g>
-      ${grain(0.1)}${vignette("#3a2312", .42)}`;
+      ${o.fx === false ? "" : grain(0.1) + vignette("#3a2312", .42)}`;
     return s;
   }
 
   // ---------------------------------------------------------------- fuori: sala server sconosciuta
-  function serverRoom() {
-    const vx = 960, vy = 470;
-    let racks = "";
-    const depths = [0.3, 0.42, 0.58, 0.8, 1.1, 1.5];
+  // file di armadi server in prospettiva; opens[i] = apertura degli occhi del server i (0 chiusi .. 1 aperti)
+  function racks(opens = [], lean = 0) {
+    const vx = 960, vy = 470; let out = "";
+    const depths = [0.3, 0.42, 0.58, 0.8, 1.1, 1.5]; let k = 0;
     for (const side of [-1, 1]) depths.forEach((d, i) => {
-      const x = vx + side * (120 + d * 640), y = vy + 40 + d * 420, fog = Math.max(0, 1 - d);
-      racks += `<g opacity="${0.35 + d * 0.65}">${place(server({ open: i % 2 ? 1 : 0.7 }), x, y, d * 1.25)}</g>`;
-      racks += `<rect x="${x - 100 * d * 1.25}" y="${y - 430 * d * 1.25}" width="${200 * d * 1.25}" height="${440 * d * 1.25}" fill="#0b1526" opacity="${fog * 0.55}"/>`;
+      const x = vx + side * (120 + d * 640), y = vy + 40 + d * 420, fog = Math.max(0, 1 - d), op = opens[k++] ?? 0.7;
+      out += `<g opacity="${0.35 + d * 0.65}">${place(server({ open: op }), x, y, d * 1.25, `rotate(${-side * lean * d})`)}</g>`;
+      out += `<rect x="${x - 100 * d * 1.25}" y="${y - 430 * d * 1.25}" width="${200 * d * 1.25}" height="${440 * d * 1.25}" fill="#0b1526" opacity="${fog * 0.55}"/>`;
     });
+    return out;
+  }
+  function serverRoom(o = {}) {
+    const vx = 960, vy = 470;
+    const racksSvg = o.servers === false ? "" : racks();
     return `<defs>${lg("nbg", [[0, "#0a1322"], [1, "#16243b"]])}${lg("floor", [[0, "#13203a"], [1, "#0a1222"]])}
         <radialGradient id="redglow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ff4d3d" stop-opacity=".55"/><stop offset="1" stop-color="#ff4d3d" stop-opacity="0"/></radialGradient>
         ${lg("cone", [[0, "#cfe0ff", .35], [1, "#cfe0ff", 0]])}</defs>
@@ -85,10 +90,10 @@
       <path d="M0,${vy + 60} L${W},${vy + 60} L${W},${H} L0,${H}Z" fill="url(#floor)"/>
       ${Array.from({ length: 9 }, (_, i) => { const x = -400 + i * 340; return `<path d="M${vx + (i - 4) * 14},${vy + 60} L${x},${H}" stroke="#2a3b5c" stroke-width="${3 + Math.abs(i - 4)}" opacity=".7"/>`; }).join("")}
       ${Array.from({ length: 6 }, (_, i) => `<path d="M0,${vy + 80 + i * i * 16} L${W},${vy + 80 + i * i * 16}" stroke="#1d2b45" stroke-width="2" opacity=".8"/>`).join("")}
-      ${racks}
-      <path d="M800,0 L1120,0 L1260,1000 L660,1000Z" fill="url(#cone)"/>
+      ${racksSvg}
+      ${o.cone === false ? "" : '<path d="M800,0 L1120,0 L1260,1000 L660,1000Z" fill="url(#cone)"/>'}
       <ellipse cx="960" cy="890" rx="260" ry="44" fill="#cfe0ff" opacity=".16"/>
-      ${grain(0.14)}${vignette("#02060d", .7)}`;
+      ${o.fx === false ? "" : grain(0.14) + vignette("#02060d", .7)}`;
   }
 
   // ---------------------------------------------------------------- composizioni delle 3 immagini chiave
@@ -116,5 +121,24 @@
       ${[["STRUMENTO APPROVATO", 250, -3], ["REGOLE CHIARE", 790, 2], ["PERSONE FORMATE", 1250, -2]].map(([t, x, r]) => `<g transform="translate(${x},950) rotate(${r})"><rect width="430" height="64" rx="4" fill="#f1ebde"/><rect y="64" width="430" height="4" fill="#000" opacity=".2"/><text x="22" y="42" font-family="Inter" font-weight="800" font-size="22" letter-spacing="2" fill="${P.ink}">${t}</text><g transform="translate(386,32) rotate(-10)"><rect x="-26" y="-22" width="52" height="44" rx="8" fill="none" stroke="${P.copper}" stroke-width="5"/><path d="M-14,0 L-3,11 L15,-11" fill="none" stroke="${P.copper}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></g></g>`).join("")}
       ${hud}<g transform="translate(1560,64) rotate(-2)"><rect width="290" height="118" rx="4" fill="#f1ebde"/><text x="24" y="38" font-family="Inter" font-weight="800" font-size="20" letter-spacing="3" fill="#9a3f17">STESSO TEMPO</text><text x="24" y="98" font-family="IBM Plex Mono" font-weight="700" font-size="58" fill="${P.ink}">00:30</text><path d="M214,74 L232,92 L262,56" fill="none" stroke="#9a3f17" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></g>`,
   };
-  root.Scenes = { office, serverRoom, frames, W, H };
+  const fx = (kind = "warm") => kind === "night" ? grain(0.14) + vignette("#02060d", .7) : kind === "cool" ? grain(0.12) + vignette("#0b1526", .5) : grain(0.1) + vignette("#3a2312", .42);
+  // la rete: cavi in tre piani di parallasse, pacchetti di dati, nuvole e bandierine "?" (disegnata a ogni fotogramma)
+  function network(t, o = {}) {
+    const sp = o.speed ?? 900, off = (k) => -((t * sp * k) % 3840);
+    const cable = (y, amp, w, c, k, ph) => { let d = ""; for (let x = -200; x <= 4200; x += 120) { const yy = y + amp * Math.sin((x / 520) + ph); d += (x === -200 ? "M" : "L") + x + "," + yy.toFixed(1); }
+      return `<g transform="translate(${off(k)},0)"><path d="${d}" fill="none" stroke="#0a1120" stroke-width="${w + 10}" stroke-linecap="round" opacity=".5"/><path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#fff" stroke-width="${w * 0.18}" stroke-linecap="round" opacity=".18" transform="translate(0,${-w * 0.25})"/></g>`; };
+    const packets = (y, k, c) => Array.from({ length: 10 }, (_, i) => { const x = ((i * 410 + t * sp * k * 1.6) % 2400) - 200; return `<g transform="translate(${x},${y + 30 * Math.sin(i + t * 3)})"><rect x="-26" y="-17" width="52" height="34" rx="5" fill="${c}" stroke="${P.ink}" stroke-width="3.5"/><path d="M-26,-17 L0,4 L26,-17" fill="none" stroke="${P.ink}" stroke-width="3"/></g>`; }).join("");
+    const clouds = Array.from({ length: 5 }, (_, i) => { const x = ((i * 620 - t * sp * 0.15) % 3100 + 3100) % 3100 - 400; return `<g transform="translate(${x},${150 + (i % 3) * 80})" opacity=".35"><ellipse rx="120" ry="44" fill="#2b3e63"/><ellipse cx="-60" cy="-20" rx="70" ry="44" fill="#2b3e63"/><ellipse cx="50" cy="-30" rx="80" ry="52" fill="#2b3e63"/></g>`; }).join("");
+    const flags = Array.from({ length: 4 }, (_, i) => { const x = ((i * 700 - t * sp * 0.4) % 2800 + 2800) % 2800 - 300; return `<g transform="translate(${x},${330 + (i % 2) * 40})"><line y1="0" y2="-120" stroke="#8796b3" stroke-width="5"/><path d="M0,-120 L80,-104 L0,-86Z" fill="${["#b5562a", "#5fb3a7", "#d8a24a", "#e0457b"][i]}"/><text x="26" y="-96" font-family="Inter" font-weight="800" font-size="20" fill="#fff">?</text></g>`; }).join("");
+    return `<rect width="${W}" height="${H}" fill="#0d1729"/><radialGradient id="netglow" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#22345a"/><stop offset="1" stop-color="#0d1729"/></radialGradient><rect width="${W}" height="${H}" fill="url(#netglow)"/>
+      ${clouds}${flags}${cable(470, 60, 26, "#34507f", 0.35, 0)}${packets(430, 0.35, "#5d7fb0")}${cable(640, 40, 54, P.copper, 0.7, 1.3)}${cable(880, 70, 90, "#2f8f83", 1.2, 2.1)}${packets(830, 1.2, "#f1ebde")}`;
+  }
+  // studio della spiegazione (scena del rischio): carta chiara a sinistra, blu a destra, divisi da uno strappo
+  function studio(split = 0) {
+    const x = 960 + (1 - split) * 960;
+    const tear = Array.from({ length: 18 }, (_, i) => `L${x + (i % 2 ? 14 : -10)},${i * 64}`).join(" ");
+    return `<rect width="${W}" height="${H}" fill="#efe3cc"/><rect x="${x}" y="0" width="${W}" height="${H}" fill="#1d2b45"/>
+      <path d="M${x},0 ${tear} L${x},${H}" fill="none" stroke="#f6f1e6" stroke-width="10" opacity="${split}"/>`;
+  }
+  root.Scenes = { office, serverRoom, racks, network, studio, frames, fx, tag, W, H };
 })(typeof window !== "undefined" ? window : globalThis);

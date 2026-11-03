@@ -1,0 +1,43 @@
+  <div id="fn-tag" class="tag" style="left:110px; top:96px; padding:16px 28px 12px; transform:rotate(-2deg)">
+    <div class="lbl" style="font-size:28px; color:#9a3f17">Stesso tempo</div>
+    <div class="mono" style="font-size:84px; line-height:1">00:30 <svg width="62" height="56" viewBox="0 0 62 56" style="vertical-align:-4px"><path d="M6 30 L24 48 L56 8" fill="none" stroke="#9a3f17" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+<script>
+  // Scena 9 - Finale. Il Mouse passa una copia all'Assistente (stavolta resta in azienda: spunta verde sullo schermo);
+  // "in trenta secondi": cartellino 00:30; "E io... resto a casa.": salto di gioia sotto la cupola che si scalda.
+  const SCR = { x: 465, y: 602 }, w = (x, e) => W(0, x, e);
+  const tLav = w("lavoro"), tTr = w("trenta"), tEio = w("E io"), tCasa = w("casa", "end");
+  const KC = [
+    [0, { x: 1000, y: 864, s: 1.2, by: -304, bc: 12, px: 0.2, lx: -150, ly: -120, rx: 150, ry: -120, idleMouth: "smile" }],
+    [tLav, { px: -1, py: -0.2, turn: -0.15 }, "power2.out"],                                         // segue la copia verso l'Assistente
+    [tTr, { px: 0, py: 0, turn: 0, lid: 0.15 }, "power2.out"],
+    [tEio - 0.12, { sq: 0.93, y: 864, lx: -130, ly: -95, rx: 130, ry: -95 }, "power2.in"],           // anticipazione
+    [tEio + 0.15, { sq: 1.08, y: 800, open: 0, happy: true, lx: -175, ly: -265, rx: 175, ry: -265, by: -310, bc: 18, lid: 0 }, "back.out(2)"],   // salto di gioia
+    [tEio + 0.45, { sq: 0.96, y: 864 }, "power2.in"], [tEio + 0.6, { sq: 1.0 }, "power2.out"],
+    [tCasa + 0.4, { lx: -150, ly: -120, rx: 150, ry: -120, idleMouth: "smile" }, "power2.inOut"],
+  ];
+  const tg = (t) => Anim.clamp((t - tCasa) / 0.6);
+  const update = Anim.stage($("svg.stage"), Scenes.office({ fx: false, screen: "azienda", warm: 1.2 }), Scenes.fx("warm"), (t) => {
+    const c = Anim.at(KC, t); c.mouth = (t > tEio - 0.2 && t < tEio + 0.5) ? "A" : MOUTH(t, c.idleMouth);
+    if (!c.happy) c.blink = Anim.blinkAt([0.4, DUR - 0.6], t);
+    let a = `<g transform="translate(1470,230)">${Props.secondHand(t + 22)}</g><g transform="translate(1600,642)">${Props.steam(t)}</g>`;
+    // spunta verde sullo schermo quando l'Assistente ha finito
+    const ok = Anim.ease("back.out(2.5)")(Anim.clamp((t - tTr) / 0.3));
+    if (ok > 0) a += `<g transform="translate(560,640) scale(${ok})"><circle r="40" fill="${Chars.P.teal}" stroke="${Chars.P.ink}" stroke-width="5"/><path d="M-18,0 L-4,15 L20,-14" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></g>`;
+    a += Anim.place(Anim.assistente({ mouth: t > tTr ? "A" : "smile", rx: 196, ry: -258, rh: "thumb", px: t < tTr ? 0.6 : 0.2 }, t), { x: SCR.x, y: SCR.y + 70, s: 0.8 });
+    // la copia che va all'Assistente (al sicuro)
+    const k = Anim.ease("power2.inOut")(Anim.clamp((t - tLav + 0.1) / 0.9));
+    if (k > 0 && k < 0.99) { const x = Anim.lerp(1000, SCR.x + 40, k), y = Anim.lerp(860, 560, k) - Math.sin(k * Math.PI) * 220;
+      a += Anim.place(Anim.contratto({ open: 1, mouth: "smile", lx: -150, ly: -200, rx: 150, ry: -200, idle: 0 }, t), { x, y, s: 0.75 - 0.5 * k, r: -20 * k, o: 1 - k * 0.6 }); }
+    const mm = { x: 1520, y: 868, s: 0.82, cap: true, sweat: false, mouth: "smile", lid: 0.25, px: -0.7, ct: t > tCasa ? -22 : 4, rx: t > tCasa ? 60 : 118, ry: t > tCasa ? -210 : -96 };   // si gusta il caffe'
+    a += Anim.shadow({ ...mm, ground: 868 }, 100) + Anim.place(Anim.mouse(mm, t), mm);
+    a += Anim.shadow({ ...c, ground: 864 }, 135) + Anim.place(Anim.contratto(c, t), c);
+    if (t > tEio) [[-200, -380], [210, -400], [-250, -170], [240, -200]].forEach(([dx, dy], i) => { const u = Anim.clamp((t - tEio - i * 0.08) / 0.5);
+      a += `<g transform="translate(${1000 + dx * (0.6 + 0.4 * u)},${864 + dy * (0.6 + 0.4 * u)}) rotate(${t * 80 + i * 30}) scale(${u * (1 - Anim.clamp((t - tEio - 1.4) / 0.6))})">${Props.sparkle(16, i % 2 ? "#fff" : Chars.P.copperLight)}</g>`; });
+    a += `<g transform="translate(960,70)">${Props.checklist({ checks: [1, 1, 1], lit: [1, 1, 1] })}</g>`;
+    a += `<g transform="translate(960,900)">${Props.dome({ glow: 0.25 + 0.75 * tg(t) * (0.8 + 0.2 * Math.sin(t * 4)) })}</g>`;
+    return { cam: { x: 960, y: 560, z: 1.0 + 0.04 * Anim.ease("power1.inOut")(Anim.clamp(t / DUR)) }, actors: a };
+  });
+  Anim.drive(tl, DUR, update);
+  tl.fromTo("#fn-tag", { opacity: 0, y: -50, rotation: -10 }, { opacity: 1, y: 0, rotation: -2, duration: 0.5, ease: "back.out(1.6)" }, tTr - 0.15);
+  tl.to("#fn-tag", { opacity: 0, filter: "blur(6px)", duration: 0.18 }, tEio - 0.1);
+</script>

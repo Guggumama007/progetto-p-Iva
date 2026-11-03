@@ -129,3 +129,24 @@ non l'ho usato, ma ho seguito lo stesso metodo a mano (misura, ricostruisci ogni
 - **Persone e riprese dal vero** (mani sulla tastiera, sala riunioni): senza ComfyUI con modelli, né
   stock video, le ho sostituite con scene 3D e grafiche coerenti con la storia.
 - **Voce:** Piper invece della voce originale; è più sintetica di Chatterbox o di una voce professionale.
+
+---
+
+## Aggiornamento: il cartone 2D
+Su tua richiesta il video è stato **ripensato come cartone 2D** con personaggi-oggetto, al posto del 3D di carta.
+Così è cambiato il ruolo dei repo:
+
+| Repo | Nel cartone 2D | Perché |
+|---|---|---|
+| **HyperFrames** | ✅ motore principale | Montaggio, render, sottotitoli, `check` e `snapshot` per controllare ogni scena |
+| **GSAP** | ✅ animazione | Curve di movimento (back, expo, bounce…) per ogni chiave, e la timeline di ogni scena |
+| **faster-whisper** | ✅ tempi | Il VAD misura le battute; prossima sessione: taglio della ripresa ElevenLabs e tempi parola per parola |
+| **FFmpeg** (compilato dal repo) | ✅ audio | Montaggio della voce, musica ed effetti |
+| **Chrome DevTools MCP** | ✅ design | Render e controllo (console senza errori) di foglio modello e immagini chiave |
+| **Impeccable** | ✅ revisione | `detect` sulle composizioni: 0 problemi |
+| **Remotion Skills** | ✅ metodo | Il caricamento delle texture prima del disegno (`delayRender`) è ripreso nel motore |
+| **Blender + Blender MCP** | 🗄️ prima versione | Usati per il 3D di carta. Per un cartone vettoriale non servono: il 2D in SVG è più nitido, più espressivo e molto più veloce da renderizzare senza GPU |
+| **Remotion + Three.js** | 🗄️ prima versione | Tunnel e copie in 3D. Nel cartone queste scene sono rifatte in 2D, per coerenza di stile |
+| **ComfyUI** | ⏳ in attesa | Hai scelto sfondi IA: si possono dipingere partendo dai layout vettoriali appena HuggingFace è abilitato. Per ora gli sfondi sono vettoriali, disegnati a mano in codice |
+| **Chatterbox** | ↪️ sostituito | La voce la fai con **ElevenLabs** (la tua scelta, qualità migliore) |
+| **yt-dlp** | ❌ non usato | Il riferimento è il tuo video; musica ed effetti sono sintetizzati (o da ElevenLabs nella prossima sessione) |

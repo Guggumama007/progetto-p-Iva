@@ -1,392 +1,312 @@
 {
- "duration": 63.008,
+ "duration": 67.173,
  "scenes": [
   {
    "id": "buongiorno",
    "start": 0.0,
-   "end": 6.933
+   "end": 7.304
   },
   {
    "id": "fretta",
-   "start": 6.933,
-   "end": 14.994
+   "start": 7.304,
+   "end": 17.138
   },
   {
    "id": "nessuno",
-   "start": 14.994,
-   "end": 20.812
+   "start": 17.138,
+   "end": 22.792
   },
   {
    "id": "viaggio",
-   "start": 20.812,
-   "end": 28.35
+   "start": 22.792,
+   "end": 30.854
   },
   {
    "id": "nome",
-   "start": 28.35,
-   "end": 31.599
+   "start": 30.854,
+   "end": 34.438
   },
   {
    "id": "rischio",
-   "start": 31.599,
-   "end": 44.801
+   "start": 34.438,
+   "end": 47.626
   },
   {
    "id": "riavvolgi",
-   "start": 44.801,
-   "end": 47.238
+   "start": 47.626,
+   "end": 50.516
   },
   {
    "id": "giusta",
-   "start": 47.238,
-   "end": 54.139
+   "start": 50.516,
+   "end": 57.676
   },
   {
    "id": "finale",
-   "start": 54.139,
-   "end": 59.808
+   "start": 57.676,
+   "end": 63.573
   },
   {
    "id": "cartello",
-   "start": 59.808,
-   "end": 63.008
+   "start": 63.573,
+   "end": 67.173
   }
  ],
  "lines": [
   {
    "scene": "buongiorno",
-   "text": "Buongiorno. Sono un contratto.",
-   "caption": "Buongiorno. Sono un contratto.",
+   "text": "Buongiorno! Sono un contratto. Tre pagine, due firme... e parecchi dati riservati.",
+   "caption": "Buongiorno! Sono un contratto. Tre pagine, due firme… e parecchi dati riservati.",
+   "direction": "orgoglioso abbassando la voce",
    "i": 0,
-   "wav": "audio/v2/00.wav",
+   "wav": "audio/cartoon/00.wav",
    "trim_start": 0.056,
-   "speech": 1.813,
+   "speech": 4.704,
    "pauses": [
     [
      0.0,
-     1.813
+     4.704
     ]
    ],
-   "start": 1.4,
-   "end": 3.213
-  },
-  {
-   "scene": "buongiorno",
-   "text": "Tre pagine, due firme, e parecchi dati riservati.",
-   "caption": "Tre pagine, due firme e parecchi dati riservati.",
-   "i": 1,
-   "wav": "audio/v2/01.wav",
-   "trim_start": 0.056,
-   "speech": 2.87,
-   "pauses": [
-    [
-     0.0,
-     2.87
-    ]
-   ],
-   "start": 3.563,
-   "end": 6.433
+   "start": 2.0,
+   "end": 6.704
   },
   {
    "scene": "fretta",
-   "text": "Alle nove e quindici, qualcuno ha fretta.",
-   "caption": "Alle 9:15 qualcuno ha fretta.",
-   "i": 2,
-   "wav": "audio/v2/02.wav",
-   "trim_start": 0.12,
-   "speech": 2.388,
+   "text": "Ore nove e quindici. Qualcuno ha fretta.",
+   "caption": "Ore nove e quindici. Qualcuno ha fretta.",
+   "direction": "allarmato",
+   "i": 1,
+   "wav": "audio/cartoon/01.wav",
+   "trim_start": 0.088,
+   "speech": 2.327,
    "pauses": [
     [
      0.0,
-     2.388
+     2.327
     ]
    ],
-   "start": 7.433,
-   "end": 9.821
+   "start": 7.804,
+   "end": 10.131
   },
   {
    "scene": "fretta",
    "text": "Mi copia... e mi incolla in un ciàtbot trovato online.",
    "caption": "Mi copia… e mi incolla in un chatbot trovato online.",
-   "i": 3,
-   "wav": "audio/v2/03.wav",
+   "direction": "incredulo",
+   "pre": 0.7,
+   "i": 2,
+   "wav": "audio/cartoon/02.wav",
    "trim_start": 0.024,
-   "speech": 2.449,
+   "speech": 2.402,
    "pauses": [
     [
      0.0,
-     2.449
+     2.402
     ]
    ],
-   "start": 10.171,
-   "end": 12.62
+   "start": 11.181,
+   "end": 13.583
   },
   {
    "scene": "fretta",
    "text": "Gratis. Che fortuna.",
    "caption": "Gratis. Che fortuna.",
-   "i": 4,
-   "wav": "audio/v2/04.wav",
-   "trim_start": 0.088,
-   "speech": 1.424,
+   "direction": "sarcastico",
+   "pre": 1.0,
+   "i": 3,
+   "wav": "audio/cartoon/03.wav",
+   "trim_start": 0.12,
+   "speech": 1.505,
    "pauses": [
     [
      0.0,
-     1.424
+     1.505
     ]
    ],
-   "start": 12.97,
-   "end": 14.394
+   "start": 14.933,
+   "end": 16.438
   },
   {
    "scene": "nessuno",
-   "text": "Nessuno l'ha vietato. Nessuno l'ha autorizzato.",
-   "caption": "Nessuno l'ha vietato. Nessuno l'ha autorizzato.",
-   "i": 5,
-   "wav": "audio/v2/05.wav",
+   "text": "Nessuno l'ha vietato. Nessuno l'ha autorizzato. Diciamo che... nessuno ha chiesto.",
+   "caption": "Nessuno l'ha vietato. Nessuno l'ha autorizzato. Diciamo che… nessuno ha chiesto.",
+   "direction": "pausa",
+   "i": 4,
+   "wav": "audio/cartoon/04.wav",
    "trim_start": 0.12,
-   "speech": 2.98,
+   "speech": 4.454,
    "pauses": [
     [
      0.0,
-     1.296
+     1.232
     ],
     [
-     1.472,
-     2.98
+     1.344,
+     4.454
     ]
    ],
-   "start": 15.394,
-   "end": 18.374
-  },
-  {
-   "scene": "nessuno",
-   "text": "Diciamo che... nessuno ha chiesto.",
-   "caption": "Diciamo che… nessuno ha chiesto.",
-   "i": 6,
-   "wav": "audio/v2/06.wav",
-   "trim_start": 0.056,
-   "speech": 1.488,
-   "pauses": [
-    [
-     0.0,
-     1.488
-    ]
-   ],
-   "start": 18.724,
-   "end": 20.212
+   "start": 17.638,
+   "end": 22.092
   },
   {
    "scene": "viaggio",
    "text": "Trenta secondi, ed è fatto.",
-   "caption": "Trenta secondi ed è fatto.",
-   "i": 7,
-   "wav": "audio/v2/07.wav",
-   "trim_start": 0.088,
-   "speech": 1.735,
+   "caption": "Trenta secondi, ed è fatto.",
+   "direction": "veloce",
+   "i": 5,
+   "wav": "audio/cartoon/05.wav",
+   "trim_start": 0.024,
+   "speech": 1.59,
    "pauses": [
     [
      0.0,
-     1.735
+     1.59
     ]
    ],
-   "start": 22.412,
-   "end": 24.147
+   "start": 23.792,
+   "end": 25.382
   },
   {
    "scene": "viaggio",
    "text": "Peccato che adesso io sia qui. Non so nemmeno in che paese.",
    "caption": "Peccato che adesso io sia qui. Non so nemmeno in che paese.",
-   "i": 8,
-   "wav": "audio/v2/08.wav",
-   "trim_start": 0.056,
-   "speech": 3.253,
+   "direction": "spaesato",
+   "pre": 1.5,
+   "i": 6,
+   "wav": "audio/cartoon/06.wav",
+   "trim_start": 0.024,
+   "speech": 3.122,
    "pauses": [
     [
      0.0,
-     1.68
-    ],
-    [
-     1.792,
-     3.253
+     3.122
     ]
    ],
-   "start": 24.497,
-   "end": 27.75
+   "start": 27.232,
+   "end": 30.354
   },
   {
    "scene": "nome",
    "text": "Questa si chiama sciàdou èi ài.",
    "caption": "Questa si chiama Shadow AI.",
-   "i": 9,
-   "wav": "audio/v2/09.wav",
+   "direction": "chiaro, scandito",
+   "i": 7,
+   "wav": "audio/cartoon/07.wav",
    "trim_start": 0.12,
-   "speech": 1.749,
+   "speech": 1.784,
    "pauses": [
     [
      0.0,
-     1.749
+     1.784
     ]
    ],
-   "start": 28.65,
-   "end": 30.399
+   "start": 31.154,
+   "end": 32.938
   },
   {
    "scene": "rischio",
-   "text": "E il rischio è doppio.",
-   "caption": "E il rischio è doppio.",
-   "i": 10,
-   "wav": "audio/v2/10.wav",
+   "text": "E il rischio è doppio. Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo. Per te: errori che firmi tu, e regole aziendali violate.",
+   "caption": "E il rischio è doppio. Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo. Per te: errori che firmi tu, e regole aziendali violate.",
+   "direction": "serio",
+   "i": 8,
+   "wav": "audio/cartoon/08.wav",
    "trim_start": 0.056,
-   "speech": 1.616,
+   "speech": 9.685,
    "pauses": [
     [
      0.0,
-     1.616
-    ]
-   ],
-   "start": 32.199,
-   "end": 33.815
-  },
-  {
-   "scene": "rischio",
-   "text": "Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo.",
-   "caption": "Per l'azienda: dati dei clienti esposti, informazioni riservate fuori controllo.",
-   "i": 11,
-   "wav": "audio/v2/11.wav",
-   "trim_start": 0.056,
-   "speech": 4.611,
-   "pauses": [
+     1.552
+    ],
     [
-     0.0,
-     4.611
+     1.696,
+     9.685
     ]
    ],
-   "start": 34.165,
-   "end": 38.776
-  },
-  {
-   "scene": "rischio",
-   "text": "Per te: errori che firmi tu, e regole aziendali violate.",
-   "caption": "Per te: errori che firmi tu e regole aziendali violate.",
-   "i": 12,
-   "wav": "audio/v2/12.wav",
-   "trim_start": 0.024,
-   "speech": 3.413,
-   "pauses": [
-    [
-     0.0,
-     3.413
-    ]
-   ],
-   "start": 39.126,
-   "end": 42.539
+   "start": 35.038,
+   "end": 44.723
   },
   {
    "scene": "rischio",
    "text": "Firmate da te, eh.",
    "caption": "Firmate da te, eh.",
-   "i": 13,
-   "wav": "audio/v2/13.wav",
-   "trim_start": 0.0,
-   "speech": 1.312,
+   "direction": "sottovoce, ammiccante",
+   "pre": 0.6,
+   "i": 9,
+   "wav": "audio/cartoon/09.wav",
+   "trim_start": 0.024,
+   "speech": 1.253,
    "pauses": [
     [
      0.0,
-     1.312
+     1.253
     ]
    ],
-   "start": 42.889,
-   "end": 44.201
+   "start": 45.673,
+   "end": 46.926
   },
   {
    "scene": "riavvolgi",
    "text": "Riavvolgiamo.",
    "caption": "Riavvolgiamo.",
-   "i": 14,
-   "wav": "audio/v2/14.wav",
+   "direction": "deciso",
+   "i": 10,
+   "wav": "audio/cartoon/10.wav",
    "trim_start": 0.12,
-   "speech": 0.937,
+   "speech": 0.89,
    "pauses": [
     [
      0.0,
-     0.937
+     0.89
     ]
    ],
-   "start": 45.301,
-   "end": 46.238
+   "start": 48.626,
+   "end": 49.516
   },
   {
    "scene": "giusta",
-   "text": "Stessa azienda, tre cose in più.",
-   "caption": "Stessa azienda, tre cose in più.",
-   "i": 15,
-   "wav": "audio/v2/15.wav",
-   "trim_start": 0.0,
-   "speech": 1.695,
+   "text": "Stessa azienda, tre cose in più. Uno strumento approvato. Regole chiare. Persone formate.",
+   "caption": "Stessa azienda, tre cose in più. Uno strumento approvato. Regole chiare. Persone formate.",
+   "direction": "sollevato",
+   "i": 11,
+   "wav": "audio/cartoon/11.wav",
+   "trim_start": 0.12,
+   "speech": 5.36,
    "pauses": [
     [
      0.0,
-     1.695
-    ]
-   ],
-   "start": 47.838,
-   "end": 49.533
-  },
-  {
-   "scene": "giusta",
-   "text": "Uno strumento approvato. Regole chiare. Persone formate.",
-   "caption": "Uno strumento approvato. Regole chiare. Persone formate.",
-   "i": 16,
-   "wav": "audio/v2/16.wav",
-   "trim_start": 0.024,
-   "speech": 3.656,
-   "pauses": [
-    [
-     0.0,
-     2.352
+     1.584
     ],
     [
-     2.496,
-     3.656
+     1.696,
+     4.048
+    ],
+    [
+     4.192,
+     5.36
     ]
    ],
-   "start": 49.883,
-   "end": 53.539
+   "start": 51.816,
+   "end": 57.176
   },
   {
    "scene": "finale",
-   "text": "Il lavoro si fa lo stesso, in trenta secondi.",
-   "caption": "Il lavoro si fa lo stesso, in trenta secondi.",
-   "i": 17,
-   "wav": "audio/v2/17.wav",
-   "trim_start": 0.088,
-   "speech": 2.466,
+   "text": "Il lavoro si fa lo stesso, in trenta secondi. E io... resto a casa.",
+   "caption": "Il lavoro si fa lo stesso, in trenta secondi. E io… resto a casa.",
+   "direction": "soddisfatto sorridendo",
+   "pre": 0.3,
+   "i": 12,
+   "wav": "audio/cartoon/12.wav",
+   "trim_start": 0.12,
+   "speech": 3.897,
    "pauses": [
     [
      0.0,
-     2.466
+     3.897
     ]
    ],
-   "start": 54.639,
-   "end": 57.105
-  },
-  {
-   "scene": "finale",
-   "text": "E io resto a casa.",
-   "caption": "E io resto a casa.",
-   "i": 18,
-   "wav": "audio/v2/18.wav",
-   "trim_start": 0.056,
-   "speech": 1.453,
-   "pauses": [
-    [
-     0.0,
-     1.453
-    ]
-   ],
-   "start": 57.455,
-   "end": 58.908
+   "start": 58.376,
+   "end": 62.273
   }
  ]
 }
