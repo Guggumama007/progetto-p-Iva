@@ -1,5 +1,5 @@
 """faster-whisper: tempi parola per parola della voce definitiva, per sottotitoli e timbri al frame giusto.
-- trascrive la traccia voce montata (audio/voice_eleven.wav se c'e', altrimenti la voce guida) (modello small, italiano, CPU int8, VAD Silero incluso)
+- trascrive il file di ogni battuta (line["wav"], es. audio/eleven/NN.wav) e lo riporta sui tempi della timeline (modello small, italiano, CPU int8)
 - abbina le parole alle battute per POSIZIONE (non per testo: le ripetizioni non si confondono)
 - scrive line["words"] in timeline.json senza toccare inizi/fine delle battute (le scene restano valide)
 - stampa quanto la trascrizione si discosta dal copione (controllo di pronuncia della voce)
@@ -7,19 +7,19 @@ Richiede huggingface.co abilitato (Systran/faster-whisper-small).
 Uso: .venv/bin/python tools/fw_words.py
 """
 import json, re, difflib, os
+from types import SimpleNamespace
 from faster_whisper import WhisperModel
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VOICE = next(f"{ROOT}/audio/{f}" for f in ("voice_eleven.wav", "voice_guide.wav") if os.path.exists(f"{ROOT}/audio/{f}"))
 tl = json.load(open(f"{ROOT}/timeline.json"))
 model = WhisperModel("small", device="cpu", compute_type="int8")
-segs, info = model.transcribe(VOICE, language="it", word_timestamps=True,
-                              vad_filter=True, vad_parameters=dict(min_silence_duration_ms=200), beam_size=5)
-words = [w for s in segs for w in s.words]
 norm = lambda t: re.sub(r"[^\wàèéìòù]", "", t.lower())
-heard = []
+heard, words = [], []
 for l in tl["lines"]:
-    ws = [w for w in words if l["start"] - 0.25 <= w.start <= l["start"] + 6 and w.start < (l["end"] + 1.2)]
+    # ogni battuta dal suo file: sulla traccia montata la prima parola finiva a volte nella battuta precedente
+    segs, _ = model.transcribe(f"{ROOT}/{l['wav']}", language="it", word_timestamps=True, beam_size=5)
+    off = l["start"] - l["trim_start"]
+    ws = [SimpleNamespace(word=w.word, start=w.start + off, end=w.end + off) for s in segs for w in s.words]; words += ws
     script_words = l["caption"].split()
     # allineamento per posizione tra parole del copione e parole sentite
     sm = difflib.SequenceMatcher(a=[norm(x) for x in script_words], b=[norm(w.word) for w in ws])

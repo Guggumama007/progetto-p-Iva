@@ -4,7 +4,7 @@ arpeggio veloce nel viaggio; riavvolgimento = "tape stop"; finale = maggiore piu
 Effetti: ~40 suoni sulle azioni (corsa, pop, risucchio, colpi, strappi, timbri, errori, sparkle...).
 Uscite: audio/cartoon_music.wav, audio/cartoon_sfx.wav, audio/cartoon_voice.wav (= voce guida provvisoria).
 La versione definitiva (ElevenLabs: voce, ed eventualmente musica ed effetti) si monta nella prossima sessione."""
-import json, shutil, os
+import json, os
 os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))   # percorsi relativi alla cartella del progetto
 import numpy as np, soundfile as sf
 
@@ -14,6 +14,8 @@ S = {s["id"]: s for s in tl["scenes"]}; LN = lambda sid: [l for l in tl["lines"]
 rng = np.random.default_rng(5)
 
 def wt(line, word, edge="start"):   # stessa logica di Anim.wordTime (JS)
+    w = next((x for x in line.get("words") or [] if word.lower() in x["w"].lower()), None)   # tempi faster-whisper se ci sono
+    if w: return w["end" if edge == "end" else "start"]
     text = line["caption"]; i = text.lower().find(word.lower())
     if i < 0: return line["start"]
     pos = (i + (len(word) if edge == "end" else 0)) / len(text)
@@ -163,5 +165,9 @@ mx = max(np.abs(music).max(), 1e-6); music = music / mx * 0.5
 sf.write("audio/cartoon_music.wav", music[: int(D * SR)], SR); sf.write("audio/cartoon_sfx.wav", np.clip(fx, -1, 1)[: int(D * SR)], SR)
 import os
 VOICE = "audio/voice_eleven.wav" if os.path.exists("audio/voice_eleven.wav") else "audio/voice_guide.wav"   # ElevenLabs se c'e'
-shutil.copy(VOICE, "audio/cartoon_voice.wav")
+# ElevenLabs misura -18.7 LUFS (la voce guida -17.0) con punte alte: +1.2 dB e limiter a -3 dBFS -> mix finale ~-15 LUFS come la v2
+VOICE_GAIN_DB = 1.2 if "eleven" in VOICE else 0.0
+import subprocess
+subprocess.run([os.environ.get("FFMPEG", "ffmpeg"), "-v", "error", "-y", "-i", VOICE, "-af",
+                f"volume={VOICE_GAIN_DB}dB,alimiter=limit=0.7:level=false", "audio/cartoon_voice.wav"], check=True)
 print(f"musica, effetti e voce ({VOICE}) pronti: {D:.2f} s")

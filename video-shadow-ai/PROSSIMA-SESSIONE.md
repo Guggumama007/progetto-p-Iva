@@ -1,41 +1,45 @@
-# Prossima sessione: sincronizzare la voce di ElevenLabs con il cartone
+# Voce ElevenLabs: fatto (v3). Come rifarla o ritoccarla
 
-Il cartone (`design/cartone-v2.mp4`) è sincronizzato su una **voce guida provvisoria**: serve solo a dare i tempi.
-Tutto è generato a partire da `timeline.json`: animazione, lip-sync, sottotitoli, musica ed effetti.
-Cambiando la voce, si rigenera e si riallinea tutto da solo.
+`design/cartone-v3.mp4` ha la **voce definitiva di ElevenLabs**. Tutto è generato da `timeline.json`: animazione,
+lip-sync, sottotitoli, musica ed effetti. Cambiando una battuta si rigenera e si riallinea tutto.
 
-## Cosa portare
-- La ripresa unica di ElevenLabs con il testo di [`VOCE-ELEVENLABS.md`](VOCE-ELEVENLABS.md), in mp3 o wav,
-  da caricare in chat. Va salvata come `video-shadow-ai/audio/elevenlabs.mp3` (o `.wav`).
-- Facoltativo: musica ed effetti generati su ElevenLabs, se vuoi sostituire quelli sintetizzati da codice.
-- Nessuna chiave API: il file si carica in chat, non serve collegarsi a ElevenLabs.
+## La voce usata
+| | |
+|---|---|
+| Voce | "Contratto - Sono un contratto" (`voice_id` Iva39E3GwRoV8qBIVcgR), creata con **Voice Design** (`eleven_ttv_v3`) |
+| Descrizione | donna italiana sui 35-40 anni, accento neutro, "impiegato modello" orgoglioso e puntiglioso, ironia asciutta, sorriso nella voce (testo completo in `audio/provini/design.json`) |
+| Modello | `eleven_v3`, con i tag di recitazione di [`VOCE-ELEVENLABS.md`](VOCE-ELEVENLABS.md) |
+| Impostazioni | stability 0.5 (in v3 solo 0 / 0.5 / 1), similarity_boost 0.75, style 0.3, speaker boost attivo |
+| Formato | MP3 44,1 kHz 128 kbps (piano Starter) → WAV mono 48 kHz; velocità 1x (provata 1,15x, scartata) |
+| Contesto tra battute | `previous_text`/`next_text` non sono supportati da `eleven_v3`: ogni battuta è generata da sola |
 
-## Passi (li esegue Claude, dalla cartella `video-shadow-ai`)
+Provini scartati in `audio/provini/` (4 voci della libreria e altre 5 di Voice Design).
+La voce è più lenta della voce guida: il cartone passa da 67 a **83 s**. La voce è alzata di 1,2 dB con un limiter
+a -3 dBFS in `tools/make_audio_cartoon.py`: il mix finale è a circa -15 LUFS, come la v2.
+
+## Rifare una battuta (dalla cartella `video-shadow-ai`)
+La chiave sta in `video-shadow-ai/.env` (`ELEVENLABS_API_KEY=...`, escluso da git): la legge solo lo script.
 ```bash
-# 0. ambiente (container nuovo): faster-whisper in .venv, hyperframes 0.9.9 e font in .tools, FFmpeg di sistema
-bash tools/setup_sessione.sh && source .tools/env.sh
-# 1. (solo per una ripresa unica; se le battute sono generate una per file con l'API, vanno già in audio/eleven/NN.wav)
-#    taglia la ripresa nelle 13 battute -> audio/eleven/00.wav ... 12.wav (ascoltarle: se un taglio è sbagliato, correggerlo)
-python tools/voice_to_timeline.py audio/elevenlabs.mp3
-# 2. nuova timeline sui tempi reali della voce (+ traccia voce montata audio/voice_eleven.wav)
+# ambiente: Linux/macOS -> bash tools/setup_sessione.sh && source .tools/env.sh
+#           Windows     -> stessi passi in PowerShell (.venv\Scripts\python.exe), PYTHONUTF8=1 e
+#                          HYPERFRAMES_BROWSER_PATH / _FFMPEG_PATH / _FFPROBE_PATH impostati a mano
+python tools/eleven_tts.py battute Iva39E3GwRoV8qBIVcgR 8        # rigenera solo la battuta 8 (0-12)
+python tools/eleven_tts.py tempo 1                                # (facoltativo) velocità di tutte le battute
 python tools/timeline.py audio/script_cartoon.json audio/eleven audio/pads_cartoon.json audio/voice_eleven.wav
-# 3. (solo se huggingface.co è raggiungibile) tempi parola per parola -> lip-sync e sottotitoli più precisi
-python tools/fw_words.py
-# 4. musica ed effetti sui nuovi tempi, poi rigenera il progetto HyperFrames
+python tools/fw_words.py                                          # tempi parola per parola (faster-whisper small)
 python tools/make_audio_cartoon.py && python cartoon/build.py
-# 5. controllo e render (il render dura parecchi minuti: lanciarlo in background)
-cd cartoon/hf && hyperframes check && hyperframes render --quality delivery -o ../../design/cartone-v3-master.mp4
-# 6. versione web leggera (come la v2)
+cd cartoon/hf && npx hyperframes check && npx hyperframes render --quality delivery -o ../../design/cartone-v3-master.mp4
 ffmpeg -y -i ../../design/cartone-v3-master.mp4 -c:v libx264 -preset slow -tune animation -crf 18 -pix_fmt yuv420p \
        -c:a copy -movflags +faststart ../../design/cartone-v3.mp4
 ```
-Da salvare su GitHub (ramo `video-sono-un-contratto`, poi su `main`): `audio/elevenlabs.*` se c'è, `audio/eleven/`, `audio/voice_eleven.wav`, `timeline.json`,
-`cartoon/hf/`, `design/cartone-v3.mp4` (il master no: è troppo pesante). Il file `.mp4` va spinto in un commit a parte.
+Altri comandi: `eleven_tts.py voci` (piano, modelli, voci italiane), `provini ID ...`, `design "descrizione" nome`,
+`salva GENERATED_ID nome`. Se "Shadow AI" esce all'italiana: `battute ID 7 --sciadou`.
+Il render completo dura circa 6 minuti su un PC a 16 thread (worker paralleli automatici), la versione web circa 1,5.
+Da salvare su GitHub (ramo `video-sono-un-contratto`, poi su `main`): `audio/eleven/`, `audio/voice_eleven.wav`,
+`timeline.json`, `cartoon/hf/`, `design/cartone-v3.mp4` in un commit a parte (il master no: è troppo pesante).
 
-## Da verificare a occhio dopo il cambio voce
-- I gesti cadono sulle parole giuste: le coreografie in `cartoon/shots/*.html` usano `W(i, "parola")`, quindi seguono la voce.
-  Senza il passo 3 il tempo di ogni parola è stimato dentro la battuta: controllare i fotogrammi chiave con `hyperframes snapshot`.
-- Le pause per le gag visive in `audio/pads_cartoon.json` e i `pre` in `audio/script_cartoon.json`: allungale o accorciale
-  se il ritmo della voce reale lo chiede.
-- Il lip-sync: è a "passo due" (15 fps) e usa i visemi italiani. Con i tempi di faster-whisper diventa più preciso.
-- Il volume: la v2 è a circa -15 LUFS; se la voce ElevenLabs è più alta o più bassa, riequilibrare in `tools/make_audio_cartoon.py`.
+## Da sapere
+- `tools/fw_words.py` ora trascrive **ogni battuta dal suo file**: sulla traccia montata la prima parola finiva a volte
+  nella battuta precedente, e le parole oltre i primi 6 s di una battuta venivano perse.
+- `tools/make_audio_cartoon.py` usa i tempi di faster-whisper anche per gli effetti sonori, come `Anim.wordTime` in JS.
+- `hyperframes check` passa con un solo avviso, non bloccante: contrasto di `#rk-st` nella scena "rischio" (1,98:1).
