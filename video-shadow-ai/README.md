@@ -2,10 +2,10 @@
 
 **Cartone animato 2D** di circa 67 s in 16:9, a tema Shadow AI. Tutti i personaggi sono oggetti con caratteristiche
 umane, il tono è leggero e ironico.
-- Video: `design/cartone-v1.mp4` (voce guida provvisoria: la voce definitiva di ElevenLabs si monta nella
+- Video: `design/cartone-v2.mp4` (v2: chatbot "genio digitale" che escono dallo schermo, bolla finale ricollocata; voce guida provvisoria: la voce definitiva di ElevenLabs si monta nella
   prossima sessione, vedi [`PROSSIMA-SESSIONE.md`](PROSSIMA-SESSIONE.md))
 - Design: `design/foglio-modello.png` e `design/immagine-chiave-*.png`
-- Codice del cartone: `cartoon/`. Contiene personaggi SVG (`characters.js`), oggetti di scena (`props.js`),
+- Codice del cartone: `cartoon/`. Contiene personaggi SVG (`characters.js`), i chatbot-genio (`chatbots.js`), oggetti di scena (`props.js`),
   sfondi (`scenes.js`), il motore di animazione (`anim.js`), le coreografie (`shots/*.html`) e il generatore
   del progetto HyperFrames (`build.py` → `cartoon/hf/`)
 

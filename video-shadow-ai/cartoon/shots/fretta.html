@@ -38,24 +38,27 @@
     [tInc - 0.15, { x: 1060, y: 620, s: 0.85, r: -10 }, "sine.inOut"],
     [tInc + 0.25, { x: SCR.x, y: SCR.y + 40, s: 0.12, r: -340 }, "power3.in"], [tInc + 0.27, { o: 0 }, "none"],
   ];
-  const KG = [   // ChatGratis
-    [0, { o: 0, x: SCR.x, y: SCR.y + 120, s: 0.05, lx: -150, ly: -120, rx: 150, ry: -120, mouth: "grin", lid: 0.42, px: 0.6 }],
-    [tChat - 0.12, { o: 0 }], [tChat - 0.1, { o: 1 }, "none"],
-    [tChat + 0.35, { s: 0.86, y: SCR.y + 64, lx: -215, ly: -265, rx: 210, ry: -265 }, "back.out(2.2)"],   // spunta a braccia aperte
-    [tGr + 0.9, { rx: 220, ry: -250, rh: "thumb", px: 1 }, "back.out(2)"],                              // "Che fortuna": pollice su
+  // ChatGratis: esce dallo schermo (lo schermo si gonfia, sale da dentro il display, salta) e si appollaia sul portatile
+  const PERCH = { x: 465, y: 650, s: 0.95 }, tOut = tChat - 0.3;
+  const KG = [
+    [0, { lx: -150, ly: -120, rx: 150, ry: -120, mouth: "O", lid: 0, px: 0, open: 1.2 }],
+    [tOut + 0.55, { lx: -215, ly: -268, rx: 212, ry: -268, mouth: "grin", lid: 0.42, px: 0.6, open: 1 }, "back.out(2)"],   // "Benvenuto!" a braccia aperte
+    [tGr + 0.9, { rx: 222, ry: -250, rh: "thumb", px: 1 }, "back.out(2)"],                                                 // "Che fortuna": pollice su
   ];
+  const gratis = (t) => Anim.chatgratis(Anim.at(KG, t), t);
   const flashes = [tCopia, tInc + 0.26];
   const blinks = [tF + 1.0, tChat + 0.8];
   const update = Anim.stage($("svg.stage"), Scenes.office({ fx: false }), Scenes.fx("warm"), (t) => {
     const c = Anim.at(KC, t); c.blink = Anim.blinkAt(blinks, t); c.mouth = MOUTH(t, c.idleMouth);
-    const m = Anim.at(KM, t), k = Anim.at(KK, t), g = Anim.at(KG, t);
+    const m = Anim.at(KM, t), k = Anim.at(KK, t);
     if (m.run > 0.05) { m.stride = t * 22; m.y -= Math.abs(Math.sin(t * 11)) * 20 * m.run; }
     let a = `<g transform="translate(1470,230)">${Props.secondHand(t + 13)}</g><g transform="translate(1600,642)">${Props.steam(t)}</g>`;
     // schermo che "inghiotte" la copia
     const fl = flashes.reduce((v, f) => Math.max(v, Math.max(0, 1 - Math.abs(t - f) / 0.12)), 0);
     if (fl > 0) a += `<rect x="264" y="488" width="402" height="228" rx="6" fill="#fff" opacity="${fl * 0.9}"/>`;
-    if (g.o > 0) a += Anim.place(Anim.chatgratis(g, t), g) +
-      [[-150, -300], [170, -330], [230, -150]].map(([sx, sy], i) => `<g transform="translate(${g.x + sx * g.s},${g.y + sy * g.s}) rotate(${t * 90 + i * 40}) scale(${g.s})">${Props.sparkle(16, i ? "#fff" : Chars.P.gratisPink)}</g>`).join("");
+    a += Anim.genieOut(t, { t0: tOut, T: 1.0, style: "burst", color: "#ffd23f", perch: PERCH, render: gratis });
+    if (t > tOut + 1.0) a += [[-210, -470], [220, -500], [250, -300], [-240, -300]].map(([sx, sy], i) => { const u = Anim.clamp((t - tOut - 1.0 - i * 0.1) / 0.3);
+      return `<g transform="translate(${PERCH.x + sx * PERCH.s},${PERCH.y + sy * PERCH.s}) rotate(${t * 90 + i * 40}) scale(${PERCH.s * u * (0.8 + 0.2 * Math.sin(t * 6 + i))})">${Props.sparkle(16, i % 2 ? "#fff" : Chars.P.gratisPink)}</g>`; }).join("");
     a += Anim.shadow({ ...c, ground: 864 }, 135);
     a += Anim.place(Anim.contratto(c, t), c);
     if (m.x < 2150) {

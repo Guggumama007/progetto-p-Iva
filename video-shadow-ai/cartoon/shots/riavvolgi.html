@@ -12,8 +12,8 @@
     c.mouth = MOUTH(t, c.idleMouth); c.blink = Anim.blinkAt([tEnd + 0.5], t);
     let a = `<g transform="translate(1470,230)">${Props.secondHand(30 - u * 40)}</g><g transform="translate(1600,642)">${Props.steam(2 - t)}</g>`;
     // ChatGratis che sprofonda nello schermo
-    const g = 1 - back(t, 0.05, 0.55);
-    if (g > 0.01) a += Anim.place(Anim.chatgratis({ rx: 220, ry: -250, rh: "thumb", px: 1 }, t), { x: SCR.x, y: SCR.y + 64 - 50 * (1 - g), s: 0.86 * g });
+    a += Anim.genieOut(t, { t0: 0.05, T: 0.55, style: "burst", color: "#ffd23f", reverse: true, perch: { x: 465, y: 650, s: 0.95 },
+                          render: (tt) => Anim.chatgratis({ rx: 222, ry: -250, rh: "thumb", px: 1 }, tt) });
     a += Anim.shadow({ ...c, ground: 864 }, 135);
     a += Anim.place(Anim.contratto(c, t), c);
     // la copia che rientra (arco al contrario)

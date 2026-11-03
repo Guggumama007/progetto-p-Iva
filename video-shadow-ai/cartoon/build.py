@@ -12,7 +12,7 @@ tl = json.load(open(f"{ROOT}/timeline.json")); D = tl["duration"]
 S = {s["id"]: s for s in tl["scenes"]}
 LINES = [{k: l[k] for k in ("scene", "start", "end", "caption", "pauses", "speech") if k in l} | ({"words": l["words"]} if l.get("words") else {}) for l in tl["lines"]]
 
-for f in ("characters.js", "props.js", "scenes.js", "anim.js"): shutil.copy(f"{C}/{f}", f"{HF}/assets/{f}")
+for f in ("characters.js", "chatbots.js", "props.js", "scenes.js", "anim.js"): shutil.copy(f"{C}/{f}", f"{HF}/assets/{f}")
 shutil.copy(f"{ROOT}/remotion/node_modules/gsap/dist/gsap.min.js", f"{HF}/assets/gsap.min.js")
 shutil.copy(f"{ROOT}/hyperframes/assets/paper.png", f"{HF}/assets/paper.png")
 
@@ -124,6 +124,7 @@ open(f"{HF}/index.html", "w").write(f"""<!doctype html>
     <title>Sono un contratto · Usare l'IA in sicurezza · Lezione 3</title>
     <script src="assets/gsap.min.js"></script>
     <script src="assets/characters.js"></script>
+    <script src="assets/chatbots.js"></script>
     <script src="assets/props.js"></script>
     <script src="assets/scenes.js"></script>
     <script src="assets/anim.js"></script>

@@ -97,13 +97,22 @@
       armL: [s.lx ?? -130, s.ly ?? -150, s.lb ?? 0.35, s.lh ?? "open"], armR: [s.rx ?? 118, s.ry ?? -96, s.rb ?? -0.2, s.rh ?? "open"],
       cup: s.cup ?? true, cupTilt: s.ct ?? 8, sweat: s.sweat ?? true, stride: s.stride, cap: s.cap });
   }
-  function chatgratis(s, t) {
+  function chatgratisOld(s, t) {
     return Chars.chatgratis({ eyes: { lid: s.lid ?? 0.42, px: s.px ?? 0.6, py: s.py ?? 0, open: (s.open ?? 1) * (s.blink ?? 1), lidColor: Chars.P.gratis }, mouth: s.mouth ?? "grin",
       armL: [s.lx ?? -210, s.ly ?? -250, s.lb ?? 0.25, s.lh ?? "open"], armR: [s.rx ?? 205, s.ry ?? -255, s.rb ?? -0.25, s.rh ?? "thumb"] });
   }
-  function assistente(s, t) {
+  function assistenteOld(s, t) {
     return Chars.assistente({ eyes: { open: (s.open ?? 0.9) * (s.blink ?? 1), px: s.px ?? 0, py: s.py ?? 0.1, lid: s.lid ?? 0 }, mouth: s.mouth ?? "smile",
       armL: [s.lx ?? -178, s.ly ?? -128, s.lb ?? 0.3, s.lh ?? "open"], armR: [s.rx ?? 184, s.ry ?? -238, s.rb ?? -0.2, s.rh ?? "thumb"] });
+  }
+  // geni digitali (design scelto): stesse chiavi di prima (occhi, bocca, braccia)
+  function chatgratis(s, t) {
+    return root.Chatbots.genieGratis({ eyes: { lid: s.lid ?? 0.4, px: s.px ?? 0.7, py: s.py ?? 0, open: (s.open ?? 1) * (s.blink ?? 1), lidColor: Chars.P.gratis }, mouth: s.mouth ?? "grin",
+      armL: [s.lx ?? -206, s.ly ?? -350, s.lb ?? 0.3, s.lh ?? "open"], armR: [s.rx ?? 210, s.ry ?? -360, s.rb ?? -0.3, s.rh ?? "thumb"] });
+  }
+  function assistente(s, t) {
+    return root.Chatbots.genieAssist({ eyes: { open: (s.open ?? 0.9) * (s.blink ?? 1), px: s.px ?? 0, py: s.py ?? 0.1, lid: s.lid ?? 0, lidColor: Chars.P.teal }, mouth: s.mouth ?? "smile",
+      armL: [s.lx ?? -150, s.ly ?? -184, s.lb ?? 0.45, s.lh ?? "open"], armR: [s.rx ?? 192, s.ry ?? -344, s.rb ?? -0.25, s.rh ?? "thumb"] });
   }
   // posiziona un pupazzo: x,y (piedi), scala, rotazione, opacita', specchio
   // filtri condivisi (alone azzurro della "copia", bagliore caldo)
@@ -125,10 +134,12 @@
   // bg puo' essere una stringa o un oggetto {nome: svg}: in quel caso frame(t) sceglie lo sfondo con r.bg
   function stage(svg, bg, fx, frame) {
     const bgs = typeof bg === "string" ? { main: bg } : bg;
-    svg.innerHTML = `${defs}<g class="cam">${Object.entries(bgs).map(([k, v]) => `<g class="bg" data-bg="${k}">${v}</g>`).join("")}<g class="actors"></g></g><g class="fx"></g><g class="over"></g>`;
+    const sid = (svg.closest("[data-composition-id]")?.getAttribute("data-composition-id") ?? "x");
+    svg.innerHTML = `${defs}<defs>${clipDefs(sid)}</defs><g class="cam">${Object.entries(bgs).map(([k, v]) => `<g class="bg" data-bg="${k}">${v}</g>`).join("")}<g class="actors"></g></g><g class="fx"></g><g class="over"></g>`;
     const camG = svg.querySelector(".cam"), act = svg.querySelector(".actors"), fxG = svg.querySelector(".fx"), over = svg.querySelector(".over");
     const layers = [...svg.querySelectorAll(".bg")]; const fxs = typeof fx === "string" ? { main: fx } : fx; let curFx = null;
     return (t) => {
+      root.Anim._sid = sid;
       const r = frame(t); camG.setAttribute("transform", cam(r.cam ?? {})); act.innerHTML = r.actors ?? ""; over.innerHTML = r.over ?? "";
       const b = r.bg ?? Object.keys(bgs)[0]; layers.forEach((l) => l.setAttribute("display", l.dataset.bg === b ? "inline" : "none"));
       const f = r.fx ?? Object.keys(fxs)[0]; if (f !== curFx) { fxG.innerHTML = fxs[f] ?? ""; curFx = f; }
@@ -149,5 +160,84 @@
     return line.end;
   }
 
-  root.Anim = { defs, stage, drive, wordTime, at, lerp, clamp, osc, ease, visemeTrack, mouthAt, blinkAt, autoBlinks, contratto, mouse, chatgratis, assistente, place, shadow, cam, shake };
+  // ---------------------------------------------------------------- un chatbot esce dallo schermo del portatile
+  // 1) anticipazione: lo schermo si gonfia e si illumina (raggi o particelle); 2) il personaggio sale da DENTRO il
+  // display (visibile solo nello schermo e sopra la cornice: passa "dietro" il bordo); 3) salto ad arco e si appollaia
+  // sopra il portatile, fluttuando. reverse: true -> lo stesso percorso al contrario (ci rientra).
+  // o: { t0, T (durata), render(t) -> svg del personaggio, style: "burst"|"gentle", color, perch: {x,y,s}, reverse }
+  const SCREEN = { x: 264, y: 488, w: 402, h: 228, top: 472 };
+  function emerge(t, o) {
+    const T = o.T ?? (o.style === "gentle" ? 1.5 : 1.0), sc = o.screen ?? SCREEN, cx = sc.x + sc.w / 2, cy = sc.y + sc.h / 2;
+    let d = t - o.t0; if (o.reverse) d = T - d;      // al contrario: d parte da T (appollaiato) e scende a 0 (dentro lo schermo)
+    if (d < 0) return "";
+    if (d >= T) return perched(t, o);
+    const fa = o.style === "gentle" ? 0.28 : 0.3, fr = o.style === "gentle" ? 0.45 : 0.33;
+    const u = d / T, ps = o.perch.s, col = o.color ?? "#ffd23f";
+    let out = "", under = "";
+    // 1) anticipazione sullo schermo
+    const glow = u < fa ? u / fa : Math.max(0, 1 - (u - fa) / (1 - fa) * 1.6);
+    if (glow > 0) {
+      const bul = 1 + 0.05 * Math.sin(Math.min(1, u / fa) * Math.PI) ;
+      under += `<g transform="translate(${cx},${cy}) scale(${bul})"><rect x="${-sc.w / 2}" y="${-sc.h / 2}" width="${sc.w}" height="${sc.h}" rx="8" fill="${col}" opacity="${0.55 * glow}"/>
+        <ellipse rx="${sc.w * 0.42}" ry="${sc.h * 0.36}" fill="#fff" opacity="${0.35 * glow}"/></g>`;
+      if (o.style === "gentle") for (let i = 0; i < 14; i++) { const ph = ((d * 0.9 + i / 14) % 1), x = sc.x + 20 + ((i * 97) % (sc.w - 40)), y = sc.y + sc.h - ph * (sc.h + 160);
+          out += `<rect x="${x}" y="${y}" width="12" height="12" rx="2" fill="${col}" opacity="${glow * Math.sin(ph * Math.PI)}" transform="rotate(${ph * 90} ${x + 6} ${y + 6})"/>`; }
+      else for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 + 0.2, r0 = 140, r1 = 140 + 220 * glow;
+          out += `<line x1="${cx + Math.cos(a) * r0}" y1="${cy + Math.sin(a) * r0 * 0.7}" x2="${cx + Math.cos(a) * r1}" y2="${cy + Math.sin(a) * r1 * 0.7}" stroke="${col}" stroke-width="${10 * glow}" stroke-linecap="round" opacity="${0.8 * glow}"/>`; }
+    }
+    // 2) salita da dentro lo schermo -> 3) salto sul portatile
+    let pose;
+    if (u >= fa && u < fa + fr) {
+      const k = (u - fa) / fr, e = ease(o.style === "gentle" ? "power2.out" : "power3.out")(k);
+      pose = { x: cx, y: sc.y + sc.h + 120 * ps - e * (sc.h + 120 * ps + 40), s: ps * (0.55 + 0.45 * e), sq: o.style === "gentle" ? 1.0 : 1.18 - 0.1 * e, r: 0 };
+    } else if (u >= fa + fr) {
+      const k = (u - fa - fr) / (1 - fa - fr), e = ease("power1.inOut")(k), lift = Math.sin(k * Math.PI) * (o.style === "gentle" ? 30 : 90);
+      pose = { x: lerp(cx, o.perch.x, e), y: lerp(sc.y - 40, o.perch.y, e) - lift, s: ps, r: (o.style === "gentle" ? -4 : 10) * Math.sin(k * Math.PI),
+               sq: k > 0.82 ? 1 - 0.16 * Math.sin((k - 0.82) / 0.18 * Math.PI) : 1.05 };
+    }
+    if (pose) {
+      const g = `<g transform="translate(${pose.x},${pose.y}) rotate(${pose.r}) scale(${pose.s / Math.sqrt(pose.sq)},${pose.s * pose.sq})">${o.render(t)}</g>`;
+      const inside = pose.y > sc.top - 10;     // durante la salita: ritaglio dentro lo schermo + sopra la cornice
+      const sid = root.Anim._sid ?? "x";
+      out += inside ? `<g clip-path="url(#clipScreen-${sid})">${g}</g><g clip-path="url(#clipAbove-${sid})">${g}</g>` : g;
+    }
+    return under + out;
+  }
+  // il genio esce dallo schermo: anticipazione (schermo che si gonfia e si illumina), salita da dentro il display con
+  // slancio (back.out) e poi oscillazione ancorata alla coda. La coda resta SEMPRE dentro il monitor.
+  // o: { t0, T, render(t), style: "burst"|"gentle", color, perch: {x, y, s}, reverse, phase }
+  function genieOut(t, o) {
+    const T = o.T ?? (o.style === "gentle" ? 1.5 : 1.0), sc = SCREEN, cx = sc.x + sc.w / 2, cy = sc.y + sc.h / 2, col = o.color ?? "#ffd23f";
+    let d = t - o.t0; if (o.reverse) d = T - d;
+    if (d < 0) return "";
+    const fa = o.style === "gentle" ? 0.32 : 0.3, u = Math.min(1, d / T), p = o.perch;
+    let out = "";
+    const glow = u < fa ? u / fa : Math.max(0, 1 - (u - fa) / (1 - fa) * 1.5);
+    if (glow > 0 && u < 1) {
+      out += `<g transform="translate(${cx},${cy}) scale(${1 + 0.05 * Math.sin(Math.min(1, u / fa) * Math.PI)})"><rect x="${-sc.w / 2}" y="${-sc.h / 2}" width="${sc.w}" height="${sc.h}" rx="8" fill="${col}" opacity="${0.55 * glow}"/><ellipse rx="${sc.w * 0.42}" ry="${sc.h * 0.36}" fill="#fff" opacity="${0.35 * glow}"/></g>`;
+      if (o.style === "gentle") for (let i = 0; i < 14; i++) { const ph = ((d * 0.9 + i / 14) % 1), x = sc.x + 20 + ((i * 97) % (sc.w - 40)), y = sc.y + sc.h - ph * (sc.h + 200);
+          out += `<rect x="${x}" y="${y}" width="12" height="12" rx="2" fill="${col}" opacity="${glow * Math.sin(ph * Math.PI)}" transform="rotate(${ph * 90} ${x + 6} ${y + 6})"/>`; }
+      else for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 + 0.2, r0 = 140, r1 = 140 + 220 * glow;
+          out += `<line x1="${cx + Math.cos(a) * r0}" y1="${cy + Math.sin(a) * r0 * 0.7}" x2="${cx + Math.cos(a) * r1}" y2="${cy + Math.sin(a) * r1 * 0.7}" stroke="${col}" stroke-width="${10 * glow}" stroke-linecap="round" opacity="${0.8 * glow}"/>`; }
+    }
+    let y, s, sq, r;
+    if (u < fa) return out;                                                     // solo anticipazione
+    if (u < 1) {
+      const k = (u - fa) / (1 - fa), e = ease(o.style === "gentle" ? "back.out(1.2)" : "back.out(1.8)")(k);
+      y = lerp(sc.y + sc.h + 470 * p.s, p.y, e); s = p.s * (0.7 + 0.3 * Math.min(1, e)); sq = o.style === "gentle" ? 1 : 1.12 - 0.12 * Math.min(1, k * 1.4); r = (o.style === "gentle" ? 2 : 6) * Math.sin(k * Math.PI);
+    } else { y = p.y + 5 * Math.sin(t * 2.2 + (o.phase ?? 0)); s = p.s; sq = 1 + 0.015 * Math.sin(t * 2.2 + 1); r = 3 * Math.sin(t * 1.6 + (o.phase ?? 0)); }
+    const g = `<g transform="translate(${p.x},${y}) rotate(${r}) scale(${s / Math.sqrt(sq)},${s * sq})">${o.render(t)}</g>`;
+    const sid = root.Anim._sid ?? "x";
+    return out + `<g clip-path="url(#clipScreen-${sid})">${g}</g><g clip-path="url(#clipAbove-${sid})">${g}</g>`;
+  }
+  // appollaiato sopra il portatile, fluttuando dolcemente
+  function perched(t, o) {
+    const p = o.perch, bob = 6 * Math.sin(t * 2.4 + (o.phase ?? 0));
+    return `<ellipse cx="${p.x}" cy="${SCREEN.top - 2}" rx="${110 * p.s}" ry="${12 * p.s}" fill="#000" opacity=".14"/>
+      <g transform="translate(${p.x},${p.y + bob}) rotate(${1.5 * Math.sin(t * 1.7)}) scale(${p.s})">${o.render(t)}</g>`;
+  }
+  const clipDefs = (sid) => `<clipPath id="clipScreen-${sid}"><rect x="${SCREEN.x}" y="${SCREEN.y}" width="${SCREEN.w}" height="${SCREEN.h}" rx="6"/></clipPath>
+    <clipPath id="clipAbove-${sid}"><rect x="-2000" y="-3000" width="6000" height="${3000 + SCREEN.top}"/></clipPath>`;
+
+  root.Anim = { genieOut, emerge, perched, SCREEN, defs, stage, drive, wordTime, at, lerp, clamp, osc, ease, visemeTrack, mouthAt, blinkAt, autoBlinks, contratto, mouse, chatgratis, assistente, place, shadow, cam, shake };
 })(typeof window !== "undefined" ? window : globalThis);

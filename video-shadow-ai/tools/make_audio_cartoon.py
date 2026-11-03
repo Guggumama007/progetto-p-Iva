@@ -148,7 +148,7 @@ for k in range(16): put(fx, r0 + 0.1 + k * 0.07, tick(0.09))
 put(fx, r0 + tR + 0.95, pop(0.15))
 # 8 giusta
 g0 = T("giusta"); Lg = LN("giusta")[0]; gg = lambda w, e="start": wt(Lg, w, e)
-put(fx, g0 + 0.1, slide_whistle(0.7, True, 0.05)); put(fx, g0 + 0.85, thud(0.3, 70)); put(fx, g0 + 0.85, sparkle(0.05))
+put(fx, g0 + 0.15, slide_whistle(0.55, False, 0.06)); put(fx, g0 + 0.62, pop(0.18)); put(fx, g0 + 0.7, sparkle(0.05))   # la bolla si gonfia
 put(fx, gg("tre") - 0.1, rustle(0.4, 0.15)); put(fx, gg("strumento") - 0.1, chime(0.06))
 for w in ("approvato", "chiare", "formate"): put(fx, gg(w, "end") - 0.08, thud(0.5))
 for k in range(8): put(fx, gg("Persone") - 0.7 + k * 0.18, tick(0.06))

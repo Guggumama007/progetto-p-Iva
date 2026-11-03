@@ -44,7 +44,8 @@
   const CAM = [[0, { x: 1000, y: 600, z: 1.48 }], [DUR, { x: 1006, y: 606, z: 1.54 }, "power1.inOut"]];
   const blinks = [tA + 0.55, L[0].b + 0.3];
   // fondo sfocato con ChatGratis e il Mouse ancora al loro posto (continuita' con la scena precedente)
-  const bgCast = Anim.place(Anim.chatgratis({ rx: 220, ry: -250, rh: "thumb", px: 1 }, 0), { x: 465, y: 666, s: 0.86 }) +
+  Anim._sid = SID;                      // il fondo statico usa i ritagli di questa scena
+  const bgCast = Anim.genieOut(0, { t0: -100, perch: { x: 465, y: 650, s: 0.95 }, render: (t) => Anim.chatgratis({ lx: -215, ly: -268, rx: 222, ry: -250, rh: "thumb", px: 1 }, t) }) +
     Anim.shadow({ x: 1440, y: 868, s: 0.95, ground: 868 }, 110) + Anim.place(Anim.mouse({ mouth: "smile", px: -0.6, lx: -140, ly: -150 }, 0), { x: 1440, y: 868, s: 0.95 });
   const update = Anim.stage($("svg.stage"), `<g filter="url(#fxBlur)">${Scenes.office({ fx: false })}${bgCast}</g>`, Scenes.fx("warm"), (t) => {
     const c = Anim.at(KC, t); c.blink = Anim.blinkAt(blinks, t); c.mouth = MOUTH(t, c.idleMouth);

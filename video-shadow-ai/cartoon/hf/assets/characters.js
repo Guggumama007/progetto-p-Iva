@@ -214,5 +214,5 @@
     </g>`;
   }
 
-  root.Chars = { P, contratto, mouse, chatgratis, assistente, server, mouth, eye };
+  root.Chars = { P, contratto, mouse, chatgratis, assistente, server, mouth, eye, arm };
 })(typeof window !== "undefined" ? window : globalThis);

@@ -10,8 +10,9 @@
     [tB, { x: 960, y: 540, z: 1.0 }, "none"], [tC - 0.01, { x: 960, y: 540, z: 1.06 }, "none"],
     [tC, { x: 960, y: 560, z: 1.0 }, "none"], [DUR, { x: 960, y: 640, z: 1.16 }, "power1.inOut"],
   ];
-  const KG = [[0, { x: SCR.x, y: SCR.y + 64, s: 0.86, rx: 220, ry: -250, rh: "thumb", lx: -215, ly: -265, px: 1, mouth: "grin" }],
-              [0.15, { s: 0.86 }], [0.55, { s: 0.0, y: SCR.y + 10 }, "back.in(2)"]];                          // rientra nello schermo
+  // ChatGratis si tuffa di nuovo nello schermo (lo stesso percorso dell'uscita, al contrario) e la camera lo segue
+  const gratisIn = { t0: 0.0, T: 0.62, style: "burst", color: "#ffd23f", reverse: true, perch: { x: 465, y: 650, s: 0.95 },
+                     render: (t) => Anim.chatgratis({ lx: -200, ly: -150, rx: 200, ry: -150, mouth: "grin", lid: 0.3, px: -0.4 }, t) };
   // la copia sul cavo (B) e nella sala server (C)
   const cableY = (X, t) => 640 + 40 * Math.sin((X + ((t * 900 * 0.7) % 3840)) / 520 + 1.3) - 26;
   const KC = [
@@ -31,11 +32,11 @@
     (t) => {
       const cam = Anim.at(CAM, t);
       if (t < tB) {                                                              // A: dentro lo schermo
-        const g = Anim.at(KG, t); let a = `<g transform="translate(1470,230)">${Props.secondHand(t + 23)}</g>`;
+        let a = `<g transform="translate(1470,230)">${Props.secondHand(t + 23)}</g>`;
         // il Contratto e il Mouse restano dove erano (continuita'), il Contratto guarda lo schermo preoccupato
         a += Anim.shadow({ x: 1000, y: 864, s: 1.22, ground: 864 }, 135) + Anim.place(Anim.contratto({ px: -1, py: 0.2, turn: -0.3, by: -302, bc: 22, mouth: "worried", lx: -90, ly: -150, rx: 90, ry: -150 }, t), { x: 1000, y: 864, s: 1.22 });
         a += Anim.shadow({ x: 1440, y: 868, s: 0.95, ground: 868 }, 110) + Anim.place(Anim.mouse({ mouth: "smile", px: -0.6, lx: -140, ly: -150 }, t), { x: 1440, y: 868, s: 0.95 });
-        if (g.s > 0.01) a += Anim.place(Anim.chatgratis(g, t), g);
+        a += Anim.genieOut(t, gratisIn);
         const fill = Anim.clamp((t - 0.55) / 0.3);
         return { bg: "office", fx: "warm", cam, actors: a, over: fill > 0 ? `<rect width="1920" height="1080" fill="#ffe27a" opacity="${fill}"/>` : "" };
       }

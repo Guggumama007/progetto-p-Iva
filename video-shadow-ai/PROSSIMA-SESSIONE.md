@@ -1,6 +1,6 @@
 # Prossima sessione: sincronizzare la voce di ElevenLabs con il cartone
 
-Il cartone (`design/cartone-v1.mp4`) è sincronizzato su una **voce guida provvisoria**: serve solo a dare i tempi.
+Il cartone (`design/cartone-v2.mp4`) è sincronizzato su una **voce guida provvisoria**: serve solo a dare i tempi.
 Tutto è generato a partire da `timeline.json`: animazione, lip-sync, sottotitoli, musica ed effetti.
 Cambiando la voce, si rigenera e si riallinea tutto da solo.
 
@@ -22,7 +22,7 @@ cd video-shadow-ai
 # 4. musica ed effetti sui nuovi tempi, poi rigenera il progetto HyperFrames
 python3 tools/make_audio_cartoon.py && python3 cartoon/build.py
 # 5. controllo e render
-cd cartoon/hf && npx hyperframes check && npx hyperframes render --quality delivery -o ../../design/cartone-v2.mp4
+cd cartoon/hf && npx hyperframes check && npx hyperframes render --quality delivery -o ../../design/cartone-v3.mp4
 ```
 
 ## Da verificare a occhio dopo il cambio voce
