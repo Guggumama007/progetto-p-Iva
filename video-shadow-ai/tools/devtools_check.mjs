@@ -6,7 +6,7 @@ const [url, out, expr] = process.argv.slice(2);
 const transport = new StdioClientTransport({
   command: "node",
   args: ["/opt/tools/node_modules/chrome-devtools-mcp/build/src/bin/chrome-devtools-mcp.js", "--headless", "--isolated", "--no-usage-statistics", "--no-performance-crux",
-         "--executablePath", "/opt/pw-browsers/chromium", "--viewport", "1920x1080",
+         "--executablePath", "/opt/pw-browsers/chromium", "--viewport", process.env.VIEWPORT || "1920x1080",
          "--chromeArg=--no-sandbox", "--chromeArg=--use-angle=swiftshader", "--chromeArg=--enable-unsafe-swiftshader"],
 });
 const c = new Client({ name: "shadow-ai-check", version: "1.0.0" });
@@ -19,5 +19,5 @@ const pages = await call("list_pages", {}); console.log(pages);
 const ids = [...pages.matchAll(/(\d+):/g)].map(m => +m[1]); const pageId = ids[ids.length - 1];
 if (expr) console.log(await call("evaluate_script", { pageId, function: `() => (${expr})` }));
 console.log((await call("list_console_messages", { pageId }))?.slice(0, 800));
-console.log(await call("take_screenshot", { pageId, filePath: out, format: "png" }));
+console.log(await call("take_screenshot", { pageId, filePath: out, format: "png", fullPage: process.env.FULLPAGE === "1" }));
 await c.close();
