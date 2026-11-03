@@ -13,9 +13,7 @@ S = {s["id"]: s for s in tl["scenes"]}
 LINES = [{k: l[k] for k in ("scene", "start", "end", "caption", "pauses", "speech") if k in l} | ({"words": l["words"]} if l.get("words") else {}) for l in tl["lines"]]
 
 for f in ("characters.js", "chatbots.js", "props.js", "scenes.js", "anim.js"): shutil.copy(f"{C}/{f}", f"{HF}/assets/{f}")
-# gsap e la carta sono gia' nel repo (cartoon/hf/assets): si ricopiano solo se le sorgenti ci sono
-for src, dst in ((f"{ROOT}/remotion/node_modules/gsap/dist/gsap.min.js", "gsap.min.js"), (f"{ROOT}/hyperframes/assets/paper.png", "paper.png")):
-    if os.path.exists(src): shutil.copy(src, f"{HF}/assets/{dst}")
+# gsap.min.js e paper.png sono fissi in cartoon/hf/assets (fanno parte del repo)
 
 PAPER_CSS = """
   .tag { position:absolute; background:#f1ebde url(assets/paper.png); background-blend-mode:multiply; color:#1c2230;

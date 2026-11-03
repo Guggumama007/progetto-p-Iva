@@ -1,8 +1,4 @@
 # dipendenze e cache (rigenerabili)
-remotion/node_modules/
-hyperframes/.hyperframes/
-hyperframes/assets/audio/
-*.blend1
 __pycache__/
 cartoon/hf/.hyperframes/
 cartoon/hf/assets/audio/
@@ -12,5 +8,4 @@ audio/cartoon_voice.wav
 # ambiente della sessione (tools/setup_sessione.sh)
 .venv/
 .tools/
-audio/eleven/
 design/*-master.mp4

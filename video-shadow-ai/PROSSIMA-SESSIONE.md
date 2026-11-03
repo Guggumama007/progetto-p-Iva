@@ -14,7 +14,8 @@ Cambiando la voce, si rigenera e si riallinea tutto da solo.
 ```bash
 # 0. ambiente (container nuovo): faster-whisper in .venv, hyperframes 0.9.9 e font in .tools, FFmpeg di sistema
 bash tools/setup_sessione.sh && source .tools/env.sh
-# 1. taglia la ripresa nelle 13 battute -> audio/eleven/00.wav ... 12.wav (ascoltarle: se un taglio è sbagliato, correggerlo)
+# 1. (solo per una ripresa unica; se le battute sono generate una per file con l'API, vanno già in audio/eleven/NN.wav)
+#    taglia la ripresa nelle 13 battute -> audio/eleven/00.wav ... 12.wav (ascoltarle: se un taglio è sbagliato, correggerlo)
 python tools/voice_to_timeline.py audio/elevenlabs.mp3
 # 2. nuova timeline sui tempi reali della voce (+ traccia voce montata audio/voice_eleven.wav)
 python tools/timeline.py audio/script_cartoon.json audio/eleven audio/pads_cartoon.json audio/voice_eleven.wav
@@ -28,7 +29,7 @@ cd cartoon/hf && hyperframes check && hyperframes render --quality delivery -o .
 ffmpeg -y -i ../../design/cartone-v3-master.mp4 -c:v libx264 -preset slow -tune animation -crf 18 -pix_fmt yuv420p \
        -c:a copy -movflags +faststart ../../design/cartone-v3.mp4
 ```
-Da salvare su GitHub (ramo `video-sono-un-contratto`): `audio/elevenlabs.*`, `audio/voice_eleven.wav`, `timeline.json`,
+Da salvare su GitHub (ramo `video-sono-un-contratto`, poi su `main`): `audio/elevenlabs.*` se c'è, `audio/eleven/`, `audio/voice_eleven.wav`, `timeline.json`,
 `cartoon/hf/`, `design/cartone-v3.mp4` (il master no: è troppo pesante). Il file `.mp4` va spinto in un commit a parte.
 
 ## Da verificare a occhio dopo il cambio voce

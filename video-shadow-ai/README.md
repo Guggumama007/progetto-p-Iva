@@ -1,50 +1,40 @@
 # "Sono un contratto": Usare l'IA in sicurezza · Lezione 3
 
-**Cartone animato 2D** di circa 67 s in 16:9, a tema Shadow AI. Tutti i personaggi sono oggetti con caratteristiche
-umane, il tono è leggero e ironico.
-- Video: `design/cartone-v2.mp4` (v2: chatbot "genio digitale" che escono dallo schermo, bolla finale ricollocata; voce guida provvisoria: la voce definitiva di ElevenLabs si monta nella
-  prossima sessione, vedi [`PROSSIMA-SESSIONE.md`](PROSSIMA-SESSIONE.md))
-- Design: `design/foglio-modello.png` e `design/immagine-chiave-*.png`
-- Codice del cartone: `cartoon/`. Contiene personaggi SVG (`characters.js`), i chatbot-genio (`chatbots.js`), oggetti di scena (`props.js`),
-  sfondi (`scenes.js`), il motore di animazione (`anim.js`), le coreografie (`shots/*.html`) e il generatore
-  del progetto HyperFrames (`build.py` → `cartoon/hf/`)
+**Cartone animato 2D** di circa 67 s in 16:9 sul tema della Shadow AI. Il protagonista è un contratto che viene
+copiato in un chatbot gratuito, finisce chissà dove e poi, "riavvolgendo", mostra il modo giusto: strumento approvato,
+regole chiare, persone formate. Tutti i personaggi sono oggetti con caratteristiche umane, e il tono è leggero e ironico.
 
-### Versioni precedenti (archivio)
-La prima versione, in 3D di carta con Blender (stop-motion), è nelle cartelle `blender/`, `remotion/` e
-`hyperframes/` e in `design/bozza-1.mp4`. È stata sostituita dal cartone 2D.
-- Copione: [`SCRIPT.md`](SCRIPT.md)
-- Valutazione dei 14 repo usati: [`REPOS.md`](REPOS.md)
-- Bozze: `design/`
+- **Video attuale:** [`design/cartone-v2.mp4`](design/cartone-v2.mp4), con voce guida provvisoria. La voce definitiva
+  di ElevenLabs si monta con [`PROSSIMA-SESSIONE.md`](PROSSIMA-SESSIONE.md).
+- **Design:** `design/foglio-modello.png` (personaggi), `design/immagine-chiave-*.png` (ambienti),
+  `design/chatbot-proposte.png` e `design/protezione-proposte.png` (proposte approvate per la v2).
 
-## Pipeline della prima versione (3D di carta)
+## Documentazione
+| File | Contenuto |
+|---|---|
+| [`STILE.md`](STILE.md) | guida di stile della serie: mondo, disegno, tavolozza, personaggi, animazione, tipografia, suono, struttura di un episodio |
+| [`NUOVO-VIDEO.md`](NUOVO-VIDEO.md) | come fare un nuovo episodio nello stesso stile, con un prompt pronto per Claude Code |
+| [`REPOS.md`](REPOS.md) | i 14 repo GitHub usati (e perché) e il metodo di lavoro |
+| [`VOCE-ELEVENLABS.md`](VOCE-ELEVENLABS.md) | casting della voce, impostazioni e testo delle 13 battute |
+| [`PROSSIMA-SESSIONE.md`](PROSSIMA-SESSIONE.md) | comandi per montare la voce ElevenLabs e renderizzare la v3 |
+
+## Pipeline
 | Passo | Strumento | File |
 |---|---|---|
-| Voce (provvisoria Piper, definitiva Chatterbox) | Piper · Chatterbox | `tools/tts.py`, `tools/chatterbox_voice.py` |
-| Timeline (battute, scene) | faster-whisper (VAD) | `tools/timeline.py` → `timeline.json` |
+| Copione e recitazione | ElevenLabs | `VOCE-ELEVENLABS.md`, `audio/script_cartoon.json` |
+| Timeline (battute, pause per le gag) | faster-whisper (VAD) | `tools/timeline.py`, `audio/pads_cartoon.json` → `timeline.json` |
 | Tempi parola per parola | faster-whisper | `tools/fw_words.py` |
-| Scene in carta (personaggio, scrivania, sala server, cupola) | Blender 4.0 via **Blender MCP** | `blender/paperlib.py`, `blender/shot_*.py`, `tools/blender_mcp_client.py` |
-| Render Blender (coda) | Blender CLI, EEVEE | `tools/render_daemon.sh` |
-| Tunnel e copie | Three.js + GSAP in **Remotion** | `remotion/src/Tunnel.tsx`, `remotion/src/Copie.tsx` |
-| Musica ed effetti | sintesi Python, suoni CC via **yt-dlp** | `tools/make_audio.py`, `tools/fetch_sfx.py` |
-| Materiali di carta | **ComfyUI** (SD-Turbo) | `tools/comfy_assets.py` |
-| Clip e riavvolgimento | **FFmpeg** compilato dal repo | `tools/make_clips.sh` |
-| Montaggio, tipografia, sottotitoli | **HyperFrames** + GSAP | `tools/build_hyperframes.py` → `hyperframes/` |
-| Controllo qualità | HyperFrames `check`/`snapshot`, **Impeccable**, **Chrome DevTools MCP** | `tools/devtools_check.mjs` |
+| Personaggi, oggetti, sfondi | SVG parametrico disegnato in codice | `cartoon/characters.js`, `chatbots.js`, `props.js`, `scenes.js` |
+| Animazione (chiavi, lip-sync, camera) | GSAP | `cartoon/anim.js`, `cartoon/shots/*.html` |
+| Montaggio, sottotitoli, render | HyperFrames | `cartoon/build.py` → `cartoon/hf/` |
+| Musica ed effetti | sintesi Python + FFmpeg | `tools/make_audio_cartoon.py` |
+| Tavole di design | Chrome DevTools MCP | `cartoon/model-sheet.html`, `frame.html`, `*-proposte.html` |
+| Controllo qualità | HyperFrames `check` e `snapshot`, Impeccable `detect` | |
+| Ambiente per una sessione nuova | | `tools/setup_sessione.sh` |
 
 ## Rigenerare
 ```bash
-python3 tools/build_hyperframes.py && tools/make_clips.sh
-cd hyperframes && npx hyperframes check && npx hyperframes render --quality delivery -o ../design/finale.mp4
+bash tools/setup_sessione.sh && source .tools/env.sh      # solo la prima volta in un ambiente nuovo
+python tools/make_audio_cartoon.py && python cartoon/build.py
+cd cartoon/hf && hyperframes check && hyperframes render --quality delivery -o ../../design/cartone-master.mp4
 ```
-
-## Pipeline del cartone 2D
-| Passo | Strumento | File |
-|---|---|---|
-| Copione e indicazioni di recitazione | ElevenLabs (prossima sessione) | `VOCE-ELEVENLABS.md`, `audio/script_cartoon.json` |
-| Timeline (battute, pause per le gag) | faster-whisper (VAD) | `tools/timeline.py`, `audio/pads_cartoon.json` → `timeline.json` |
-| Personaggi, oggetti, sfondi | SVG parametrico (disegnato in codice) | `cartoon/characters.js`, `cartoon/props.js`, `cartoon/scenes.js` |
-| Animazione (chiavi, lip-sync, camera) | GSAP | `cartoon/anim.js`, `cartoon/shots/*.html` |
-| Montaggio, sottotitoli, render | HyperFrames | `cartoon/build.py` → `cartoon/hf/` |
-| Musica ed effetti | sintesi Python (FFmpeg) | `tools/make_audio_cartoon.py` |
-| Foglio modello e immagini chiave | Chrome DevTools MCP (screenshot) | `cartoon/model-sheet.html`, `cartoon/frame.html` |
-| Controllo qualità | HyperFrames `check`/`snapshot`, Impeccable `detect` | |

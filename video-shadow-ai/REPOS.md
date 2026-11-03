@@ -1,152 +1,55 @@
-# I 14 repo: installati, provati e valutati
+# Repo GitHub usati e metodo di lavoro
 
-Ho clonato da GitHub tutti e 14 i repo dello screenshot (in `/opt/repos`), li ho installati e li ho provati
-in questo ambiente cloud. Poi ho deciso caso per caso se usarli nel video.
+## Come ho lavorato
+Il punto di partenza era il video originale della Lezione 3 ("Usare l'IA in sicurezza", Shadow AI) con i suoi
+14 repo di riferimento. La richiesta non era copiarlo, ma **ripensarlo** usando quei repo e progettando insieme il design.
 
-Prima, i limiti di questo ambiente, perché spiegano quasi tutti i "no":
-- **niente GPU**: solo 4 core CPU e 15 GB di RAM;
-- **rete filtrata**: GitHub, npm, PyPI e i pacchetti Ubuntu sono raggiungibili. HuggingFace, Civitai,
-  YouTube, Vimeo, PolyHaven, Sketchfab e projects.blender.org invece sono **bloccati**;
-- **disco limitato**: circa 40 GB in tutto per la sessione.
+1. **Analisi dell'originale:** trascrizione e analisi delle scene e del messaggio. Da lì è nato un concept nuovo
+   scelto insieme: *"Sono un contratto"*, la storia raccontata dal documento che viene incollato in un chatbot gratuito.
+2. **Installazione e prova dei 14 repo** in un ambiente cloud senza GPU e con la rete filtrata (Hugging Face,
+   YouTube e altri siti bloccati). Per ciascuno ho deciso se e come usarlo (tabella sotto).
+3. **Prima versione, 3D di carta:** stop-motion in Blender, guidato tramite Blender MCP, scene Three.js in Remotion
+   e montaggio in HyperFrames. Funzionava, ma l'obiettivo era un **cartone professionale**, non un video da "AI slop".
+4. **Riprogettazione come cartone 2D:** prima i bozzetti, poi l'animazione. Foglio modello dei personaggi e tre immagini
+   chiave da approvare (`design/foglio-modello.png`, `design/immagine-chiave-*.png`), poi un motore di animazione
+   scritto apposta (personaggi SVG parametrici, chiavi con curve GSAP, lip-sync con visemi italiani a passo due,
+   palpebre, camera) e le 10 scene animate una per una, con i gesti agganciati alle parole del copione.
+5. **Revisioni con te:** v1, poi v2 con i chatbot ridisegnati come "genio digitale" (dalle proposte in
+   `design/chatbot-proposte.png`) e la bolla protettiva finale ricollocata (`design/protezione-proposte.png`).
+6. **Controllo qualità a ogni giro:** `hyperframes check` (errori, contrasto WCAG, audio), fotogrammi di controllo
+   con `hyperframes snapshot` riguardati scena per scena, Impeccable `detect`, Chrome DevTools MCP per le tavole
+   di design, loudness misurata con FFmpeg.
+7. **Voce:** una voce guida provvisoria (Piper) per dare i tempi; la voce definitiva è ElevenLabs
+   (`VOCE-ELEVENLABS.md`, `PROSSIMA-SESSIONE.md`). Tutto è guidato da `timeline.json`: cambiando la voce,
+   animazione, lip-sync, sottotitoli, musica ed effetti si riallineano da soli.
 
-| # | Repo | Installato | Provato | Nel video? |
-|---|------|-----------|---------|------------|
-| 1 | remotion-dev/skills | ✅ clonato | ✅ letto e applicato | ✅ **Sì**, come guida |
-| 2 | blender/blender | ✅ clonato, ⚠️ non compilato | ✅ Blender 4.0.2 ufficiale | ✅ **Sì** |
-| 3 | SYSTRAN/faster-whisper | ✅ 1.2.1 dal repo | ⚠️ modello non scaricabile | 🟡 **In parte**, solo VAD |
-| 4 | resemble-ai/chatterbox | ✅ dal repo | ❌ pesi non scaricabili | ❌ **No**, sostituito da Piper |
-| 5 | greensock/GSAP | ✅ 3.15.0 (= repo) | ✅ | ✅ **Sì** |
-| 6 | ahujasid/mcp-for-blender | ✅ dal repo + add-on | ✅ 9 strumenti MCP | ✅ **Sì** |
-| 7 | ChromeDevTools/chrome-devtools-mcp | ✅ 1.12.0 (= repo) | ✅ 32 strumenti MCP | ✅ **Sì**, per i controlli |
-| 8 | FFmpeg/FFmpeg | ✅ **compilato dal sorgente** | ✅ | ✅ **Sì** |
-| 9 | remotion-dev/remotion | ✅ 4.0.540 (= repo) | ✅ | ✅ **Sì** |
-| 10 | pbakaus/impeccable | ✅ dal repo | ✅ `detect` | ✅ **Sì**, per la revisione |
-| 11 | mrdoob/three.js | ✅ 0.187.0 (= repo) | ✅ WebGL su CPU | ✅ **Sì** |
-| 12 | Comfy-Org/ComfyUI | ✅ dal repo | ✅ gira, 1036 nodi, 0 modelli | ❌ **No** |
-| 13 | yt-dlp/yt-dlp | ✅ dal repo | ❌ YouTube e Vimeo bloccati | ❌ **No** |
-| 14 | heygen-com/hyperframes | ✅ 0.9.9 (= repo) | ✅ render ok | ✅ **Sì**, come compositor finale |
+La prima versione in 3D è stata tolta dal repo per tenerlo pulito. Resta nella cronologia di git
+(commit `c3c1ead`, cartelle `video-shadow-ai/blender`, `remotion`, `hyperframes`).
 
----
+## I 14 repo
+| # | Repo | Ruolo nel cartone finale | Perché |
+|---|------|-------------------------|--------|
+| 1 | [heygen-com/hyperframes](https://github.com/heygen-com/hyperframes) | ✅ **motore di montaggio e render** | Ogni scena è una composizione HTML; `check`, `snapshot` e `render` per controllo ed export |
+| 2 | [greensock/GSAP](https://github.com/greensock/GSAP) | ✅ **animazione** | Curve di movimento (back, power, expo...) per ogni chiave e la timeline di ogni scena |
+| 3 | [SYSTRAN/faster-whisper](https://github.com/SYSTRAN/faster-whisper) | ✅ **tempi della voce** | Il VAD Silero misura inizio e fine di ogni battuta e taglia la ripresa ElevenLabs; con Hugging Face raggiungibile dà anche i tempi parola per parola |
+| 4 | [FFmpeg/FFmpeg](https://github.com/FFmpeg/FFmpeg) | ✅ **audio e codifica** | Compilato dal sorgente: montaggio della voce, loudness, versione web del video |
+| 5 | [ChromeDevTools/chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) | ✅ **tavole di design** | Render e controllo (console senza errori) di foglio modello, immagini chiave e proposte |
+| 6 | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | ✅ **revisione** | `detect` sulle composizioni: 0 problemi; linee guida di animazione e critica |
+| 7 | [remotion-dev/skills](https://github.com/remotion-dev/skills) | ✅ **metodo** | Le regole di Remotion (precaricare le risorse prima di disegnare, frame-accurate) applicate al motore |
+| 8 | [blender/blender](https://github.com/blender/blender) | 🗄️ prima versione | Usato per il 3D di carta; per un cartone vettoriale il 2D in SVG è più nitido e molto più veloce senza GPU |
+| 9 | [ahujasid/mcp-for-blender](https://github.com/ahujasid/mcp-for-blender) | 🗄️ prima versione | Scene Blender costruite e corrette via MCP, guardando la vista con `look` |
+| 10 | [remotion-dev/remotion](https://github.com/remotion-dev/remotion) | 🗄️ prima versione | Tunnel e copie in 3D; nel cartone queste scene sono rifatte in 2D per coerenza di stile |
+| 11 | [mrdoob/three.js](https://github.com/mrdoob/three.js) | 🗄️ prima versione | Scene astratte (fibre, server, scudo) in Remotion |
+| 12 | [resemble-ai/chatterbox](https://github.com/resemble-ai/chatterbox) | ↪️ sostituito | I pesi stanno su Hugging Face (bloccato); la voce definitiva la fa ElevenLabs |
+| 13 | [Comfy-Org/ComfyUI](https://github.com/Comfy-Org/ComfyUI) | ⏳ non usato | Installato e avviato, ma senza modelli (Hugging Face e Civitai bloccati) e senza GPU; gli sfondi sono vettoriali disegnati in codice |
+| 14 | [yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp) | ❌ non usato | YouTube e Vimeo bloccati; il riferimento era già il tuo video, musica ed effetti sono sintetizzati |
 
-## Dettaglio, uno per uno
+Altri strumenti: **Piper** (voce guida provvisoria, `tools/tts.py`), **ElevenLabs** (voce definitiva),
+font open source **Inter**, **EB Garamond**, **IBM Plex Mono**.
 
-### 1. Remotion Skills: ✅ usato
-**Cosa è:** le istruzioni ufficiali di Remotion pensate per gli agenti AI.
-**Test:** le ho lette (`remotion-best-practices`, `remotion-create`, `remotion-render`, `remotion-captions`).
-**Perché lo uso:** mi hanno detto come impostare il progetto, la configurazione del browser per il
-rendering e come gestire Three.js dentro Remotion. È documentazione, non codice: la uso come guida.
-
-### 2. Blender: ✅ usato (build ufficiale, non compilata da me)
-**Test:** il repo `blender/blender` è clonato. Compilarlo qui però non è fattibile: le librerie
-precompilate stanno su `projects.blender.org`, che è bloccato, e la compilazione richiederebbe ore su 4 core.
-Ho installato **Blender 4.0.2**, la build ufficiale dello stesso progetto (pacchetto Ubuntu).
-EEVEE funziona senza schermo grazie a Xvfb e a Mesa (render su CPU).
-**Perché lo uso:** fa le scene 3D "fisiche", cioè la scrivania delle 9:15 e la pioggia di fogli, con
-luci, materiali e profondità di campo che in HTML non si ottengono.
-
-### 3. faster-whisper: 🟡 usato in parte
-**Test:** la libreria 1.2.1 è installata dal repo. `WhisperModel("small")` fallisce con
-`ProxyError 403`, perché i modelli stanno solo su HuggingFace. Ho trovato un mirror su GitHub
-(`ct2-models-de/whisper-small-ct2`), ma è un account sconosciuto e i pesi non si possono verificare:
-non l'ho scaricato.
-**Cosa uso:** il **Silero VAD** che faster-whisper include già e che funziona senza rete. Rileva dove
-c'è voce, e mi serve per sincronizzare i sottotitoli con la voce.
-**Al posto della trascrizione:** lo stesso modello Whisper small, in formato ONNX dalle release GitHub di
-k2-fsa/sherpa-onnx (progetto affidabile). Con quello ho trascritto il video originale e verifico la voce generata.
-
-### 4. Chatterbox: ❌ non usato
-**Test:** installato dal repo. L'import funziona e l'italiano è supportato (`"it" in SUPPORTED_LANGUAGES`).
-`from_pretrained()` però fallisce con `ProxyError 403`, perché i pesi stanno su HuggingFace.
-**Perché no:** senza pesi non genera voce. **Sostituto:** Piper (open-source, voce italiana
-"paola", modello scaricato dalle release GitHub di sherpa-onnx).
-*Se Chatterbox ti interessa, sul tuo computer funziona: lì HuggingFace non è bloccato.*
-
-### 5. GSAP: ✅ usato
-**Test:** una timeline GSAP in pausa guidata dal fotogramma corrente, sia in Remotion sia in HyperFrames.
-**Perché lo uso:** anima tutti i titoli, i punti elenco, il timer, l'interfaccia del chatbot e la barra dei capitoli.
-
-### 6. MCP for Blender: ✅ usato
-**Test:** add-on installato in Blender, avviato con interfaccia grafica su display virtuale. Server socket
-sulla porta 9876, server MCP collegato con un mio client MCP (`tools/blender_mcp_client.py`).
-Funzionano `get_scene_info`, `execute_blender_code` e `look` (cattura della vista).
-Telemetria disattivata. Non funzionano gli strumenti online (`search_assets`, `import_asset`,
-`generate_3d`), perché PolyHaven, Sketchfab e i generatori 3D sono bloccati.
-**Perché lo uso:** costruisco le scene Blender **attraverso MCP**, cioè codice inviato alla scena viva,
-controllo con `look` e correggo. Il rendering vero lo faccio poi con Blender da riga di comando,
-perché un render lungo bloccherebbe il canale MCP.
-
-### 7. Chrome DevTools MCP: ✅ usato per i controlli
-**Test:** mio client MCP (`tools/devtools_check.mjs`) con Chromium headless. Ho provato
-`new_page`, `evaluate_script`, `list_console_messages` e `take_screenshot`. Usage statistics e CrUX disattivati.
-**Perché lo uso:** prima di esportare apro le composizioni HTML, leggo gli errori in console e
-guardo gli screenshot. È quello che promette il repo: "l'agente vede il proprio rendering e lo corregge".
-
-### 8. FFmpeg: ✅ usato (compilato dal repo)
-**Test:** **compilato dal sorgente clonato**, versione `git-2026-11-03` con libx264, in `/opt/ffmpeg-src`.
-**Perché lo uso:** mix audio (voce e musica sintetizzata), loudness, inversione per l'effetto "riavvolgiamo",
-encoding finale e ispezione. Anche HyperFrames usa questo FFmpeg.
-
-### 9. Remotion: ✅ usato
-**Test:** render di prova con `@remotion/three` e GSAP, Chromium headless con WebGL software (SwiftShader).
-**Perché lo uso:** renderizza le scene Three.js (il documento che esce, i server, lo scudo), poi passate a HyperFrames.
-
-### 10. Impeccable: ✅ usato per la revisione
-**Test:** `impeccable detect` (62 regole, nessun LLM) gira sui file HTML.
-**Perché lo uso:** controlla le composizioni HTML (tipografia, contrasto, impaginazione). Seguo anche le sue
-linee guida `animate.md` e `critique.md` nella revisione dei fotogrammi.
-
-### 11. Three.js: ✅ usato
-**Test:** scena con luci e materiali PBR renderizzata in Remotion.
-**Perché lo uso:** le scene "astratte" (fibre luminose, server, scudo olografico) sono più controllabili
-in Three.js che in Blender, e si animano fotogramma per fotogramma insieme a GSAP.
-
-### 12. ComfyUI: ❌ non usato
-**Test:** installato dal repo, avviato con `--cpu`, versione 0.43.0, 1036 nodi.
-Ho eseguito un flusso di lavoro via API senza modelli (LoadImage → ImageSharpen → ImageBlur → SaveImage):
-funziona.
-**Perché no:** ComfyUI serve a **generare** immagini e video con modelli (Stable Diffusion, Flux, Wan…).
-Qui i modelli sono irraggiungibili (HuggingFace e Civitai bloccati), e senza GPU una sola immagine
-richiederebbe minuti. I nodi che restano sono filtri che FFmpeg applica meglio e più velocemente
-sui circa 1500 fotogrammi. I nodi "API" (Flux Pro, Gemini, Kling…) sono servizi cloud a pagamento
-con chiave: non li ho usati. Nel video originale ComfyUI serviva per le persone in sala: io le
-sostituisco con una scena grafica (vedi sotto).
-
-### 13. yt-dlp: ❌ non usato
-**Test:** installato dal repo. `yt-dlp` su YouTube e Vimeo fallisce con `403 Forbidden`, perché il proxy blocca i siti.
-**Perché no:** serve a scaricare clip di riferimento dal web, ma il riferimento è il tuo video, che mi hai già
-mandato. E comunque qui non può raggiungere i siti.
-
-### 14. HyperFrames: ✅ usato, è il compositor finale
-**Test:** `hyperframes init` e `render` funzionano con il Chromium locale e l'FFmpeg compilato dal repo.
-Telemetria disattivata.
-**Perché lo uso:** unisce tutto: clip di Blender e Remotion, titoli GSAP, sottotitoli, barra dei capitoli,
-voce e musica. Il suo skill `reverse-any-video` (per rifare un video) richiede un piano a pagamento:
-non l'ho usato, ma ho seguito lo stesso metodo a mano (misura, ricostruisci ogni livello, confronta).
-
----
-
-## Cosa cambia rispetto all'originale
-- **Persone e riprese dal vero** (mani sulla tastiera, sala riunioni): senza ComfyUI con modelli, né
-  stock video, le ho sostituite con scene 3D e grafiche coerenti con la storia.
-- **Voce:** Piper invece della voce originale; è più sintetica di Chatterbox o di una voce professionale.
-
----
-
-## Aggiornamento: il cartone 2D
-Su tua richiesta il video è stato **ripensato come cartone 2D** con personaggi-oggetto, al posto del 3D di carta.
-Così è cambiato il ruolo dei repo:
-
-| Repo | Nel cartone 2D | Perché |
-|---|---|---|
-| **HyperFrames** | ✅ motore principale | Montaggio, render, sottotitoli, `check` e `snapshot` per controllare ogni scena |
-| **GSAP** | ✅ animazione | Curve di movimento (back, expo, bounce…) per ogni chiave, e la timeline di ogni scena |
-| **faster-whisper** | ✅ tempi | Il VAD misura le battute; prossima sessione: taglio della ripresa ElevenLabs e tempi parola per parola |
-| **FFmpeg** (compilato dal repo) | ✅ audio | Montaggio della voce, musica ed effetti |
-| **Chrome DevTools MCP** | ✅ design | Render e controllo (console senza errori) di foglio modello e immagini chiave |
-| **Impeccable** | ✅ revisione | `detect` sulle composizioni: 0 problemi |
-| **Remotion Skills** | ✅ metodo | Il caricamento delle texture prima del disegno (`delayRender`) è ripreso nel motore |
-| **Blender + Blender MCP** | 🗄️ prima versione | Usati per il 3D di carta. Per un cartone vettoriale non servono: il 2D in SVG è più nitido, più espressivo e molto più veloce da renderizzare senza GPU |
-| **Remotion + Three.js** | 🗄️ prima versione | Tunnel e copie in 3D. Nel cartone queste scene sono rifatte in 2D, per coerenza di stile |
-| **ComfyUI** | ⏳ in attesa | Hai scelto sfondi IA: si possono dipingere partendo dai layout vettoriali appena HuggingFace è abilitato. Per ora gli sfondi sono vettoriali, disegnati a mano in codice |
-| **Chatterbox** | ↪️ sostituito | La voce la fai con **ElevenLabs** (la tua scelta, qualità migliore) |
-| **yt-dlp** | ❌ non usato | Il riferimento è il tuo video; musica ed effetti sono sintetizzati (o da ElevenLabs nella prossima sessione) |
+## Note per i prossimi video
+- **Sul tuo PC** (sessione locale) Hugging Face non è bloccato: lì faster-whisper dà i tempi parola per parola
+  e ComfyUI potrebbe dipingere gli sfondi partendo dai layout vettoriali, se in futuro si vuole quella strada.
+  Lo stile attuale è però pensato per sfondi vettoriali: è ciò che lo rende coerente e nitido.
+- Le dipendenze minime della pipeline sono in `tools/setup_sessione.sh`: Python con faster-whisper,
+  Node con HyperFrames, FFmpeg, Chrome.

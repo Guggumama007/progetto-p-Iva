@@ -11,7 +11,7 @@ from faster_whisper.vad import get_speech_timestamps, VadOptions
 FFMPEG = os.environ.get("FFMPEG") or next((p for p in ("/opt/ffmpeg-src/bin/ffmpeg", shutil.which("ffmpeg")) if p and os.path.exists(p)), "ffmpeg")
 script = json.load(open(sys.argv[1])); d = sys.argv[2]
 PADS = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else None      # pause per scena (opzionale)
-VOICE_OUT = sys.argv[4] if len(sys.argv) > 4 else "audio/voice_v2.wav"
+VOICE_OUT = sys.argv[4] if len(sys.argv) > 4 else "audio/voice_eleven.wav"
 
 # respiro (s) prima della prima battuta e dopo l'ultima, per scena: lascia spazio alle azioni visive
 PAD = {  # scena: (prima, dopo)
